@@ -16,6 +16,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.7.0",
     "mongoose": "^8.2.3",
+    "socket.io": "^4.7.5",
     "zod": "^3.23.8"
   }
 }

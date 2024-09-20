@@ -2,6 +2,8 @@ const express = require("express");
 var cors = require("cors");
 const app = express();
 const port = 3000;
+const http = require('http')
+const setupSocket = require("./routes/socket"); 
 
 require("dotenv").config();
 const userRouter = require("./routes/authentication");
@@ -15,8 +17,13 @@ app.get("/", (req,res)=>{
 
 app.use("/auth", userRouter);
 
+//creating server for socket
+const server = http.createServer(app);
 
-app.listen(port, () => {
-  console.log(`app listening on port ${port}` );
-  console.log(` http://localhost:${port}/`);
+setupSocket(server)
+
+
+server.listen(port, () => {
+  console.log(`App listening on port ${port}`);
+  console.log(`http://localhost:${port}/`);
 });

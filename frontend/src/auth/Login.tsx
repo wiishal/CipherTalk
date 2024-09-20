@@ -20,13 +20,16 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
         .post(`http://localhost:3000/auth/login`, {
           userName: data.name,
           userEmail: data.email,
+          userPassword: data.password,
         })
         .then((Response) => {
           console.log(Response.data.msg);
           localStorage.setItem("userToken", Response.data.token);
           setIsLoggedIn(true);
         });
-    } catch {}
+    } catch {
+      console.log("error during login")
+    }
   };
 
   return (
