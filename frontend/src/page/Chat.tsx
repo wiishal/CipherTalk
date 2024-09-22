@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import Nav from "../component/Nav";
 import { io, Socket } from "socket.io-client";
@@ -22,14 +21,17 @@ function Chat() {
         localStorage.removeItem("userToken");
       });
   }, []);
-  useEffect(()=>{
-   const newSocket = io("http://localhost:3000");
-   console.log("connected!", newSocket);
+  useEffect(() => {
+    const token = localStorage.getItem("userToken");
+    const newSocket = io("http://localhost:3000", {
+      auth: { token: token },
+    });
+    console.log("connected!", newSocket);
 
     newSocket.on("connect", () => {
       console.log(`Connected with socket ID: ${newSocket.id}`);
     });
-  },[])
+  }, []);
 
   return (
     <>

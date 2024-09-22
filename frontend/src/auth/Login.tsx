@@ -15,21 +15,25 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
   const { register, handleSubmit } = useForm<FormValues>();
   const [passwordVisibility, setPasswordvisibility] = useState<boolean>(true);
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    try {
-      axios
-        .post(`http://localhost:3000/auth/login`, {
-          userName: data.name,
-          userEmail: data.email,
-          userPassword: data.password,
-        })
-        .then((Response) => {
-          console.log(Response.data.msg);
-          localStorage.setItem("userToken", Response.data.token);
-          setIsLoggedIn(true);
-        });
-    } catch {
-      console.log("error during login")
-    }
+    axios
+      .post(`http://localhost:3000/auth/login`, {
+        userName: data.name,
+        userEmail: data.email,
+        userPassword: data.password,
+      })
+      .then((response) => {
+        console.log(response.status);
+        localStorage.setItem("userToken", response.data.token);
+        setIsLoggedIn(true);
+      })
+      .catch((error) => {
+        console.error(
+          "Error during login:",
+          error.response?.status || error.message
+        );
+      });
+
+   
   };
 
   return (

@@ -1,27 +1,27 @@
 const bcrypt = require("bcrypt");
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const http = require('http')
-const {server} = require("socket.io")
+require("dotenv").config();
 const zod = require("zod");
-const { z } = zod;
 const router = express.Router();
+const tokenAuthenticationMiddleware = require("../middleware/tokenAuthenticationMiddleware");
+
 const data = [
   {
     userName: "vishal",
+    uid: 1,
     email: "vishal@gmail.com",
     password: "vishal123",
-    socketId:null,
+    socketId: null,
   },
   {
     userName: "vish",
+    uid: 2,
     email: "vish@gmail.com",
     password: "vish123",
-    socketId:null,
+    socketId: null,
   },
 ];
-require("dotenv").config();
-const tokenAuthenticationMiddleware = require("../middleware/tokenAuthenticationMiddleware");
 
 console.log(data);
 // signIn user hanler
@@ -29,16 +29,18 @@ router.post("/login", (req, res) => {
   console.log("req at login");
   const { userName, userPassword } = req.body;
   console.log(userName, userPassword);
+
   const userDoc = data.find((e) => {return e.userName == userName});
   console.log(userDoc)
+
   if (!userDoc) {
+    console.log("user not found")
     return res.status(404).json({ msg: "User not found" });
   }
 
   if (userDoc.password === userPassword) {
     console.log(userDoc);
     let token = jwt.sign({ user: userDoc.userName }, process.env.jwtPassword, {
-      expiresIn: "1h", // optional: add token expiration
     });
     return res.json({ token: token, msg: "User logged in" });
   } else {
