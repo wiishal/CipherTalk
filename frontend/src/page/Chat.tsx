@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import Nav from "../component/Nav";
 import { io, Socket } from "socket.io-client";
+import { Routes, Route } from "react-router-dom";
+import SignUp from "../auth/SignUp"
+import Setting from "../page/Setting";
 import axios from "axios";
 
 function Chat() {
@@ -36,6 +39,10 @@ function Chat() {
   return (
     <>
       <Nav userName={userName || "Guest"} />
+      <Routes>
+        <Route path="/" element={<SignUp />}></Route>
+        <Route path="/setting" element={<Setting/>}></Route>
+      </Routes>
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import axios from "axios";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface FormValues {
   name: string;
@@ -13,7 +14,7 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
   const { register, handleSubmit } = useForm<FormValues>();
-  const [passwordVisibility, setPasswordvisibility] = useState<boolean>(true);
+  const [passwordVisibility, setPasswordVisibility] = useState<boolean>(true);
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     axios
       .post(`http://localhost:3000/auth/login`, {
@@ -75,15 +76,12 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
             placeholder="Enter Password"
             className="ml-1 w-48 border border-sky-500 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
             {...register("password", { required: true })}
-          />
+          />{" "}
           <button
-            onClick={() => {
-              setPasswordvisibility((prev) => !prev);
-            }}
-            className="p-1"
+            type="button"
+            onClick={() => setPasswordVisibility(!passwordVisibility)}
           >
-            {" "}
-            @{" "}
+            {passwordVisibility ? "Show" : "Hide"}
           </button>
         </div>
 
@@ -93,6 +91,7 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
         >
           Submit
         </button>
+        <Link to="/SignUp"> Creat Account</Link>
       </form>
     </div>
   );
