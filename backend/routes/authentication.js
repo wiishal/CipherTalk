@@ -2,9 +2,10 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const zod = require("zod");
 const router = express.Router();
 const tokenAuthenticationMiddleware = require("../middleware/tokenAuthenticationMiddleware");
+const createUser = require("../services/userService")
+
 
 const data = [
   {
@@ -22,6 +23,7 @@ const data = [
     socketId: null,
   },
 ];
+let conversation = {};
 
 console.log(data);
 // signIn user hanler
@@ -30,33 +32,44 @@ router.post("/login", (req, res) => {
   const { userName, userPassword } = req.body;
   console.log(userName, userPassword);
 
-  const userDoc = data.find((e) => {return e.userName == userName});
-  console.log(userDoc)
+  const userDoc = data.find((e) => {
+    return e.userName == userName;
+  });
 
   if (!userDoc) {
-    console.log("user not found")
+    console.log("user not found");
     return res.status(404).json({ msg: "User not found" });
   }
 
   if (userDoc.password === userPassword) {
     console.log(userDoc);
-    let token = jwt.sign({ user: userDoc.userName }, process.env.jwtPassword, {
-    });
+    let token = jwt.sign(
+      { user: userDoc.userName },
+      process.env.jwtPassword,
+      {}
+    );
     return res.json({ token: token, msg: "User logged in" });
   } else {
     return res.status(401).json({ msg: "Incorrect password" });
   }
 });
+//signUp
+router.post("/signUp", (req,res)=>{
+  const {userName, userEmail, userPass} = req.body
+ 
 
+
+  
+})
 router.post("/verifyToken", tokenAuthenticationMiddleware, (req, res) => {
   const token = req.body.usertoken;
   const user = jwt.verify(token, process.env.jwtPassword);
 
   if (user) {
-    console.log(user)
+    console.log(user);
     res.json({ UserToken: user });
-  }else{
-    res.json({msg:"invalid token"})
+  } else {
+    res.json({ msg: "invalid token" });
   }
 });
 

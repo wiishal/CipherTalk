@@ -5,6 +5,8 @@ import { Routes, Route } from "react-router-dom";
 import SignUp from "../auth/SignUp"
 import Setting from "../page/Setting";
 import axios from "axios";
+import UserChat from "../component/UserChat";
+import Home from "../component/Home";
 
 function Chat() {
   const [userName, setUserName] = useState<string | null>(null);
@@ -40,7 +42,8 @@ function Chat() {
     <>
       <Nav userName={userName || "Guest"} />
       <Routes>
-        <Route path="/" element={<SignUp />}></Route>
+        <Route path="/" element={<Home/>}></Route>
+        <Route path="/user/:user" element={<UserChat/>}></Route>
         <Route path="/setting" element={<Setting/>}></Route>
       </Routes>
     </>
