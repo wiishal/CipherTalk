@@ -10,6 +10,8 @@ async function createUser(userName, email, password) {
       password: password,
     },
   });
+
+  return newUser.id;
 }
 
 module.exports = createUser;

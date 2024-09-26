@@ -18,8 +18,8 @@ function Chat() {
         usertoken: token,
       })
       .then((response) => {
-        console.log(response.data.UserToken.user);
-        setUserName(response.data.UserToken.user);
+        console.log(response.data.UserToken.username);
+        setUserName(response.data.UserToken.username);
       })
       .catch(() => {
         console.log("error while authentication");

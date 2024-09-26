@@ -1,11 +1,14 @@
 const bcrypt = require("bcrypt");
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const { PrismaClient } = require("@prisma/client");
 require("dotenv").config();
 const router = express.Router();
 const tokenAuthenticationMiddleware = require("../middleware/tokenAuthenticationMiddleware");
-const createUser = require("../services/userService")
+const creadentialCheck = require("../middleware/creadentialCheck");
+const createUser = require("../services/userService");
 
+const prisma = new PrismaClient();
 
 const data = [
   {
@@ -25,49 +28,53 @@ const data = [
 ];
 let conversation = {};
 
-console.log(data);
 // signIn user hanler
-router.post("/login", (req, res) => {
+
+router.post("/login", async (req, res) => {
   console.log("req at login");
   const { userName, userPassword } = req.body;
   console.log(userName, userPassword);
 
-  const userDoc = data.find((e) => {
-    return e.userName == userName;
+  const user = await prisma.user.findFirst({
+    where: {
+      username: userName,
+    },
   });
-
-  if (!userDoc) {
-    console.log("user not found");
-    return res.status(404).json({ msg: "User not found" });
+  console.log(user);
+  if (user.username == userName) {
+    console.log("username match");
+    if (user.password == userPassword) {
+      console.log("userpass match");
+      const token = jwt.sign(
+        { username: user.username, id: user.id },
+        process.env.jwtPassword
+      );
+      res.status(200).json({ token, userName, msg: "User succesful login" });
+      return;
+    }
+    res.status(401).json({ msg: "invalid password" });
+    return;
   }
+  res.json(401).json({ msg: "invalid Creadential" });
+});
 
-  if (userDoc.password === userPassword) {
-    console.log(userDoc);
-    let token = jwt.sign(
-      { user: userDoc.userName },
-      process.env.jwtPassword,
-      {}
-    );
-    return res.json({ token: token, msg: "User logged in" });
-  } else {
-    return res.status(401).json({ msg: "Incorrect password" });
+//signUp
+router.post("/signUp", async (req, res) => {
+  const { userName, userEmail, userPassword } = req.body;
+  const isvalid = await creadentialCheck(userName, userEmail);
+  if (isvalid) {
+    const id = await createUser(userName, userEmail, userPassword);
+    console.log(`user Created, id : ${id}`);
+    res.status(200).json({ msg: "sign up successful" });
   }
 });
-//signUp
-router.post("/signUp", (req,res)=>{
-  const {userName, userEmail, userPass} = req.body
- 
 
-
-  
-})
 router.post("/verifyToken", tokenAuthenticationMiddleware, (req, res) => {
   const token = req.body.usertoken;
-  const user = jwt.verify(token, process.env.jwtPassword);
-
-  if (user) {
-    console.log(user);
-    res.json({ UserToken: user });
+  const username = jwt.verify(token, process.env.jwtPassword);
+  if (username) {
+    console.log(username);
+    res.json({ UserToken: username });
   } else {
     res.json({ msg: "invalid token" });
   }

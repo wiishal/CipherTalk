@@ -20,11 +20,10 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
     axios
       .post(`${url}/auth/login`, {
         userName: data.name,
-      
         userPassword: data.password,
       })
       .then((response) => {
-        console.log(response.status);
+        console.log(response);
         localStorage.setItem("userToken", response.data.token);
         setIsLoggedIn(true);
       })

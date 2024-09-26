@@ -12,8 +12,8 @@ const setUpSocket = (server) => {
 
   io.on("connection", (socket) => {
     const token = socket.handshake.auth.token;
-    const user = jwt.verify(token, process.env.jwtPassword);
-    console.log(`${user.user} connected with socket ID: ${socket.id}`);
+    const username = jwt.verify(token, process.env.jwtPassword);
+    console.log(`${username.username} connected with socket ID: ${socket.id}`);
   });
 };
 
