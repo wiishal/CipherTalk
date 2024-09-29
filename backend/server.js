@@ -3,10 +3,10 @@ var cors = require("cors");
 const app = express();
 const port = 3000;
 const http = require('http')
-const setupSocket = require("./routes/socket"); 
+const setupSocket = require("./routes/message"); 
 
 require("dotenv").config();
-const userRouter = require("./routes/authentication");
+const userRouter = require("./routes/user");
 
 app.use(cors());
 app.use(express.json());

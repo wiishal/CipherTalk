@@ -1,7 +1,9 @@
 const Setting : React.FC =()=>{
-    return<div>
+    return (
+      <div className="size-full bg-gray-950 text-white">
         <h3>Setting page</h3>
-    </div>
+      </div>
+    );
 }
 
 export default Setting

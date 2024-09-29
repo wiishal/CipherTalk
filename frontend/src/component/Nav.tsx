@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 interface NavProps {
@@ -6,14 +6,22 @@ interface NavProps {
 }
 
 const Nav: React.FC<NavProps> = ({ userName }) => {
+  const [isSearchOn, setIsSearchOn] = useState<boolean>(false)
  const user = "vish";
   return (
-    <div className="flex flex-col gap-1 bg-slate-400 h-full w-1/6">
-      <h4 className="text-3xl m-1">{userName ? userName : "Guest"}</h4>{" "}
-      <Link to={`/user/${user}`}>{user}</Link>
-     {/* user list */}
-     <Link to="/setting">Setting</Link>
+    <div className="flex flex-col gap-1 bg-black text-white h-full w-1/6">
+      <div>
+        <h4 className="text-3xl m-1">{userName ? userName : "Guest"}</h4>{" "}
 
+       <div className="">
+        <Link to={"/Search"}>Search</Link>
+        </div>
+      </div>
+      <div>
+        <Link to={`/user/${user}`}>{user}</Link>
+      </div>
+      {/* user list */}
+      <Link to="/setting">Setting</Link>
     </div>
   );
 };

@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import Login from "./auth/Login";
-import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Chat from "./page/Chat";
 import SignUp from "./auth/SignUp";
-import Nav from "./component/Nav";
-
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 

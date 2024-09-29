@@ -7,7 +7,7 @@ async function createUser(userName, email, password) {
     data: {
       username: userName,
       email: email,
-      password: password,
+      password: password, 
     },
   });
 

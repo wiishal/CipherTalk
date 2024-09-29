@@ -1,35 +1,22 @@
-const bcrypt = require("bcrypt");
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const { PrismaClient } = require("@prisma/client");
+const bcrypt = require("bcrypt");
 require("dotenv").config();
+
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+
 const router = express.Router();
+
+//Middleware
 const tokenAuthenticationMiddleware = require("../middleware/tokenAuthenticationMiddleware");
+const creadentialTypeCheck = require("../middleware/typeCheck/creadentialTypeCheck")
 const creadentialCheck = require("../middleware/creadentialCheck");
 const createUser = require("../services/userService");
 
-const prisma = new PrismaClient();
 
-const data = [
-  {
-    userName: "vishal",
-    uid: 1,
-    email: "vishal@gmail.com",
-    password: "vishal123",
-    socketId: null,
-  },
-  {
-    userName: "vish",
-    uid: 2,
-    email: "vish@gmail.com",
-    password: "vish123",
-    socketId: null,
-  },
-];
-let conversation = {};
 
-// signIn user hanler
-
+// login user handler
 router.post("/login", async (req, res) => {
   console.log("req at login");
   const { userName, userPassword } = req.body;
@@ -42,14 +29,12 @@ router.post("/login", async (req, res) => {
   });
   console.log(user);
   if (user.username == userName) {
-    console.log("username match");
     if (user.password == userPassword) {
-      console.log("userpass match");
       const token = jwt.sign(
         { username: user.username, id: user.id },
         process.env.jwtPassword
       );
-      res.status(200).json({ token, userName, msg: "User succesful login" });
+      res.status(200).json({ token, msg: "User succesful login" });
       return;
     }
     res.status(401).json({ msg: "invalid password" });
@@ -58,9 +43,13 @@ router.post("/login", async (req, res) => {
   res.json(401).json({ msg: "invalid Creadential" });
 });
 
-//signUp
-router.post("/signUp", async (req, res) => {
+
+
+
+//signUp user handler
+router.post("/signUp",creadentialTypeCheck, async (req, res) => {
   const { userName, userEmail, userPassword } = req.body;
+
   const isvalid = await creadentialCheck(userName, userEmail);
   if (isvalid) {
     const id = await createUser(userName, userEmail, userPassword);
@@ -69,6 +58,7 @@ router.post("/signUp", async (req, res) => {
   }
 });
 
+//Token Verification 
 router.post("/verifyToken", tokenAuthenticationMiddleware, (req, res) => {
   const token = req.body.usertoken;
   const username = jwt.verify(token, process.env.jwtPassword);

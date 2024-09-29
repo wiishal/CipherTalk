@@ -6,7 +6,9 @@ interface RouteParams {
 const UserChat: React.FC = () => {
   const { user } = useParams<keyof RouteParams>();
 
-  return <div>userChat {user}</div>;
+  return (
+    <div className="size-full bg-gray-950 text-white">userChat {user}</div>
+  );
 };
 
 export default UserChat;
