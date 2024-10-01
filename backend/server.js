@@ -2,24 +2,26 @@ const express = require("express");
 var cors = require("cors");
 const app = express();
 const port = 3000;
-const http = require('http')
-const setupSocket = require("./routes/message"); 
-
 require("dotenv").config();
-const userRouter = require("./routes/user");
-
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req,res)=>{
-  res.send("backend ChipherTalk")
-})
-
-app.use("/auth", userRouter);
-
-//creating server for socket
+const http = require('http')
 const server = http.createServer(app);
 
+
+
+const setupSocket = require("./routes/message"); 
+const authRouter = require("./routes/auth");
+const friendRouter = require("./routes/friend");
+
+
+
+//routers
+app.use("/auth", authRouter);
+app.use("/Friend",friendRouter)
+
+//creating server for socket
 setupSocket(server)
 
 

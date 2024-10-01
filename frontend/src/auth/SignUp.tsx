@@ -25,6 +25,8 @@ const SignUp: React.FC = () => {
       .then((response) => {
         console.log(response.status);
         if(response.status == 200){
+          console.log(response.data.token)
+          localStorage.setItem("userToken",response.data.token);
           setIsSignUpComplete(true)
         }
       })

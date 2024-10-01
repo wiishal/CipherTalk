@@ -1,18 +1,21 @@
 const express = require("express");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 
-function tokenAuthenticationMiddlewar(req,res,next){
-    const token = req.body.usertoken;
-    const username = jwt.verify(token, process.env.jwtPassword);
+function tokenAuthenticationMiddleware(req, res, next) {
 
-    if (username) {
-      next();
-    } else {
-      res.status(200).json({ msg: "expire token" });
-    }
+  const token = req.body.usertoken;
+  let username;
+  try {
+    username = jwt.verify(token, process.env.jwtPassword);
+  } catch (error) {
+    console.log("invalid token")
+  }
 
-    
-};
+  if (username) {
+    next();
+  } else {
+    res.status(200).json({ msg: "expire token" });
+  }
+}
 
-
-module.exports = tokenAuthenticationMiddlewar;
+module.exports = tokenAuthenticationMiddleware;

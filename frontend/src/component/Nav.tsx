@@ -6,7 +6,7 @@ interface NavProps {
 }
 
 const Nav: React.FC<NavProps> = ({ userName }) => {
-  const [isSearchOn, setIsSearchOn] = useState<boolean>(false)
+
  const user = "vish";
   return (
     <div className="flex flex-col gap-1 bg-black text-white h-full w-1/6">
