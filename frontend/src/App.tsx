@@ -3,6 +3,7 @@ import Login from "./auth/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Chat from "./page/Chat";
 import SignUp from "./auth/SignUp";
+import { UserListProvider } from "./context/context"; 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
@@ -33,7 +34,9 @@ export default function App() {
       ) : (
         <div className="flex flex-row h-full">
           <BrowserRouter>
+          <UserListProvider>
             <Chat />
+          </UserListProvider>
           </BrowserRouter>
         </div>
       )}
