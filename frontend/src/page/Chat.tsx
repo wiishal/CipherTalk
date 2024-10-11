@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import Nav from "../component/Nav";
-import { io } from "socket.io-client";
+import { io,Socket } from "socket.io-client";
 import { Routes, Route } from "react-router-dom";
 import Setting from "../page/Setting";
 import axios from "axios";
 import UserChat from "../component/UserChat";
 import Home from "../component/Home";
 import Search from "./Search";
+
 function Chat() {
   const [userName, setUserName] = useState<string | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("userToken");
@@ -25,26 +27,33 @@ function Chat() {
         localStorage.removeItem("userToken");
       });
   }, []);
+
   useEffect(() => {
     const token = localStorage.getItem("userToken");
-    const newSocket = io("http://localhost:3000", {
-      auth: { token: token },
-    });
-    console.log("connected!", newSocket);
 
-    newSocket.on("connect", () => {
-      console.log(`Connected with socket ID: ${newSocket.id}`);
-    });
+    if (token) {
+      const newSocket = io("http://localhost:3000", {
+        auth: { token: token },
+      });
+      setSocket(newSocket);
+
+      return () => {
+        newSocket.disconnect();
+      };
+    }
   }, []);
 
   return (
     <>
       <Nav userName={userName || "Guest"} />
       <Routes>
-        <Route path="/" element={<Home/>}></Route>
-        <Route path="/Search" element={<Search/>}></Route>
-        <Route path="/user/:user" element={<UserChat/>}></Route>
-        <Route path="/setting" element={<Setting/>}></Route>
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/Search" element={<Search />}></Route>
+        <Route
+          path="/user/:user"
+          element={<UserChat socket={socket} />}
+        ></Route>
+        <Route path="/setting" element={<Setting />}></Route>
       </Routes>
     </>
   );
