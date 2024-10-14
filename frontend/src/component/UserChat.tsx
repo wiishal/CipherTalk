@@ -38,12 +38,15 @@ const UserChat: React.FC<UserChatProps> = ({socket}) => {
 
   useEffect(() => {
     if (socket) {
-      socket.on("receiveMessage", (data) => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-         { text: data.message, from: data.fromUser },
-        ]);
-      });
+      socket.emit("register", username);
+      
+    socket.on("receiveMessage", (data) => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: data.text, from: data.from },
+      ]);
+    });
+    console.log(messages)
     }
 
     // Cleanup the listener when the component unmounts
@@ -54,7 +57,9 @@ const UserChat: React.FC<UserChatProps> = ({socket}) => {
   const sendMessage = () => {
     if (message.trim() && socket) {
       console.log(message)
+
       socket.emit("chat-message", { message, toUser: user });
+
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: message, from: "me" }, 

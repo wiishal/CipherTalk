@@ -10,11 +10,12 @@ const router = express.Router();
 const creadentialTypeCheck = require("../middleware/typeCheck/creadentialTypeCheck");
 const tokenAuthenticationMiddleware = require("../middleware/tokenAuthenticationMiddleware");
 const creadentialCheck = require("../middleware/creadentialCheck");
+const logincreadentialTypeCheck = require("../middleware/typeCheck/loginCredentialTypeCheck")
 //services
 const createUser = require("../services/userService");
 
 // login user handler
-router.post("/login", async (req, res) => {
+router.post("/login", logincreadentialTypeCheck, async (req, res) => {
   console.log("req at login");
   const { userName, userPassword } = req.body;
   console.log(userName, userPassword);

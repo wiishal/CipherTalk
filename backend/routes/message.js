@@ -2,6 +2,7 @@ const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+let users ={}
 
 const setUpSocket = (server) => {
   console.log("Socket server initialized");
@@ -25,15 +26,21 @@ const setUpSocket = (server) => {
       const user = jwt.verify(token, process.env.jwtPassword);
       console.log(`User ${user.id} connected with socket ID: ${socket.id}`);
 
-      socket.on("chat-message", (msg) => {
-        console.log("message: " + msg.message);
-        io.emit("receiveMessage", { message: msg.message, fromUser: "all" });
-      });
+     socket.on("register", (username) => {
+       users[user.id] = socket.id; // Map the username to the socket ID
+       console.log(`${user.id} registered with ID: ${socket.id}`);
+     });
 
-      socket.on("disconnect", () => {
-        console.log(`User ${user.id} disconnected`);
-        
-      });
+     socket.on("chat-message",(msg)=>{
+      console.log(msg,users)
+         io.to(users[msg.toUser]).emit("receiveMessage", {
+           text: msg.message, // The message text sent by the user
+           from: user.id, // The user ID of the sender
+         });
+     });
+
+
+     
     } catch (err) {
       console.error("Invalid token, disconnecting socket:", err.message);
       socket.disconnect();

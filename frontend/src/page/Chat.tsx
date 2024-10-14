@@ -36,7 +36,7 @@ function Chat() {
         auth: { token: token },
       });
       setSocket(newSocket);
-
+      
       return () => {
         newSocket.disconnect();
       };
