@@ -7,13 +7,13 @@ interface RouteParams {
   user: String | "";
 }
 interface UserChatProps {
-  socket: Socket | null; 
+  socket: Socket | null;
 }
 
-const UserChat: React.FC<UserChatProps> = ({socket}) => {
+const UserChat: React.FC<UserChatProps> = ({ socket }) => {
   const [message, setMessage] = useState<string>("");
   const [username, setUsername] = useState<string>("");
- 
+
   const [messages, setMessages] = useState<{ text: string; from: string }[]>(
     []
   ); // Storing both message text and sender info
@@ -24,7 +24,7 @@ const UserChat: React.FC<UserChatProps> = ({socket}) => {
     const token = localStorage.getItem("userToken");
     axios
       .post(`${url}/Friend/verify`, {
-        usertoken: token, 
+        usertoken: token,
         userid: user,
       })
       .then((res) => {
@@ -33,37 +33,43 @@ const UserChat: React.FC<UserChatProps> = ({socket}) => {
       .catch((err) => {
         console.error("Error verifying user:", err);
       });
-
   }, [user]);
 
   useEffect(() => {
     if (socket) {
+         const userId1 = username;
+    const userId2 = user; 
+
+    // Emit the fetch-chats event with both user IDs
+    socket.emit("fetch-chats", { userId1, userId2 });
       socket.emit("register", username);
-      
-    socket.on("receiveMessage", (data) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: data.text, from: data.from },
-      ]);
-    });
-    console.log(messages)
+     
+
+      socket.on("chat-history", (chats) => {
+        console.log("Received chat history:", chats);
+        setMessages(chats)
+      });
+      socket.on("receiveMessage", (data) => {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text: data.text, from: data.from },
+        ]);
+      });
+      console.log(messages);
     }
 
     // Cleanup the listener when the component unmounts
-    
   }, [socket]);
 
- 
   const sendMessage = () => {
     if (message.trim() && socket) {
-      console.log(message)
+      console.log(message);
 
       socket.emit("chat-message", { message, toUser: user });
 
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: message, from: "me" }, 
-        
+        { text: message, from: "me" },
       ]);
       setMessage("");
     }
@@ -72,8 +78,7 @@ const UserChat: React.FC<UserChatProps> = ({socket}) => {
   return (
     <div className="size-full bg-gray-950 text-white">
       <h2>Chat with {username}</h2>
-
-      <div className="messages-container">
+      <div className="flex-col  h-5/6">
         {messages.map((msg, index) => (
           <p
             key={index}
@@ -83,16 +88,22 @@ const UserChat: React.FC<UserChatProps> = ({socket}) => {
           </p>
         ))}
       </div>
+      <div className="flex  gap-1">
+        <input
+          className="text-black p-2"
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type your message"
+        />
 
-      <input
-        className="text-black"
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type your message"
-      />
-
-      <button onClick={sendMessage}>Send</button>
+        <button
+          className=" p-2 rounded-md bg-blue-600 text-white"
+          onClick={sendMessage}
+        >
+          Send
+        </button>
+      </div>
     </div>
   );
 };
