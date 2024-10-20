@@ -7,41 +7,40 @@ interface NavProps {
 }
 interface Users {
   id: number;
-  username:string,
+  username: string;
 }
-
 
 const Nav: React.FC<NavProps> = ({ userName }) => {
   const { users } = useUserList();
-  const [usersList,setUserList] = useState<Users[]>([])
+  const [usersList, setUserList] = useState<Users[]>([]);
   const url = "http://localhost:3000";
 
-  useEffect(()=>{
-     const token = localStorage.getItem("userToken");
-     axios
-       .post(`${url}/Friend/get-Users`, {
-         usertoken: token,
-       })
-       .then((res) => {
-        console.log(res.data.data)
-         console.log(typeof res.data.data.timestamp);
+  useEffect(() => {
+    const token = localStorage.getItem("userToken");
+    axios
+      .post(`${url}/Friend/get-Users`, {
+        usertoken: token,
+      })
+      .then((res) => {
+        console.log(res.data.data);
+        console.log(typeof res.data.data.timestamp);
         setUserList(res.data.data);
-       });
-  },[])
+      });
+  }, []);
 
- console.log(users)
+  console.log(users);
   return (
-    <div className="flex flex-col gap-1 bg-black text-white h-full w-1/6">
+    <div className="flex flex-col gap-1 bg-black text-white h-full w-1/6 justify-between">
       <div>
         <h4 className="text-3xl m-1">{userName ? userName : "Guest"}</h4>{" "}
-        <div className="">
+        <div className="py-1">
+          {usersList.map((item) => (
+            <Link to={`/user/${item.id}`}>{item.username}</Link>
+          ))}
+        </div>
+        <div className="mt-2 border">
           <Link to={"/Search"}>Search</Link>
         </div>
-      </div>
-      <div>
-        {usersList.map((item) => (
-          <Link to={`/user/${item.id}`}>{item.username}</Link>
-        ))}
       </div>
       {/* user list */}
       <Link to="/setting">Setting</Link>

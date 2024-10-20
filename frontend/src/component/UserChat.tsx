@@ -5,16 +5,24 @@ import { io, Socket } from "socket.io-client";
 
 interface RouteParams {
   user: String | "";
+  
 }
 interface UserChatProps {
   socket: Socket | null;
+}
+interface Chat{
+  id: Number; senderId: Number; receiverId: Number; content: String; timestamp: String;
+}
+
+interface msg{
+
 }
 
 const UserChat: React.FC<UserChatProps> = ({ socket }) => {
   const [message, setMessage] = useState<string>("");
   const [username, setUsername] = useState<string>("");
 
-  const [messages, setMessages] = useState<{ text: string; from: string }[]>(
+  const [messages, setMessages] = useState<{ text: String; from: String }[]>(
     []
   ); // Storing both message text and sender info
   const url = "http://localhost:3000";
@@ -35,19 +43,39 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
       });
   }, [user]);
 
+  /*
+0
+: 
+{id: 3, senderId: 2, receiverId: 3, content: 'hii', timestamp: '2024-10-03T15:11:05.205Z'}
+1
+: 
+{id: 7, senderId: 3, receiverId: 2, content: 'hi', timestamp: '2024-10-10T15:58:52.748Z'} */
+
   useEffect(() => {
     if (socket) {
-         const userId1 = username;
-    const userId2 = user; 
-
-    // Emit the fetch-chats event with both user IDs
-    socket.emit("fetch-chats", { userId1, userId2 });
       socket.emit("register", username);
-     
+      const currentUserToken = localStorage.getItem("userToken");
+      const targetUser = user;
+
+      // Emit the fetch-chats event with both user IDs
+      socket.emit("fetch-chats", { currentUserToken, targetUser });
 
       socket.on("chat-history", (chats) => {
         console.log("Received chat history:", chats);
-        setMessages(chats)
+        let msg: { text: String; from: string }[] = [];
+        const recievedMsgUser = Number(user)
+        chats.forEach((element : Chat) => {
+          if (
+            element.senderId == recievedMsgUser 
+          ) {
+            
+            msg.push({ text: element.content, from: username });
+          }
+          else{
+            msg.push({ text: element.content, from: "me" });
+          }
+        });
+        setMessages(msg);
       });
       socket.on("receiveMessage", (data) => {
         setMessages((prevMessages) => [
@@ -58,8 +86,8 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
       console.log(messages);
     }
 
-    // Cleanup the listener when the component unmounts
-  }, [socket]);
+  
+  }, [username]);
 
   const sendMessage = () => {
     if (message.trim() && socket) {
