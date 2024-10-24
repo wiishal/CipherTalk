@@ -2,17 +2,15 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
 const router = express.Router();
 
 //Middleware
 const creadentialTypeCheck = require("../middleware/typeCheck/creadentialTypeCheck");
 const tokenAuthenticationMiddleware = require("../middleware/tokenAuthenticationMiddleware");
 const creadentialCheck = require("../middleware/creadentialCheck");
-const logincreadentialTypeCheck = require("../middleware/typeCheck/loginCredentialTypeCheck")
+const logincreadentialTypeCheck = require("../middleware/typeCheck/loginCredentialTypeCheck");
 //services
-const createUser = require("../services/userService");
+const { createUser, getUser } = require("../services/userService");
 
 // login user handler
 router.post("/login", logincreadentialTypeCheck, async (req, res) => {
@@ -20,25 +18,30 @@ router.post("/login", logincreadentialTypeCheck, async (req, res) => {
   const { userName, userPassword } = req.body;
   console.log(userName, userPassword);
 
-  const user = await prisma.user.findFirst({
-    where: {
-      username: userName,
-    },
-  });
-  console.log(user);
-  if (user.username == userName) {
-    if (user.password == userPassword) {
-      const token = jwt.sign(
-        { username: user.username, id: user.id },
-        process.env.jwtPassword
-      );
-      res.status(200).json({ token, msg: "User succesful login" });
+  try {
+    const user = await getUser(userName);
+    if (!user) {
+      res.json(401).json({ msg: "invalid Creadential" });
       return;
     }
-    res.status(401).json({ msg: "invalid password" });
-    return;
+    console.log(user);
+    if (user.username == userName) {
+      if (user.password == userPassword) {
+        const token = jwt.sign(
+          { username: user.username, id: user.id },
+          process.env.jwtPassword
+        );
+        res.status(200).json({ token, msg: "User succesful login" });
+        return;
+      }
+
+      res.status(401).json({ msg: "invalid password" });
+      return;
+    }
+    res.json(401).json({ msg: "invalid Creadential" });
+  } catch (error) {
+    console.log("Error while Login User", error);
   }
-  res.json(401).json({ msg: "invalid Creadential" });
 });
 
 //signUp user handler
@@ -59,10 +62,8 @@ router.post("/signUp", creadentialTypeCheck, async (req, res) => {
 
 //Token Verification
 router.post("/verifyToken", tokenAuthenticationMiddleware, (req, res) => {
-
   const token = req.body.usertoken;
   const username = jwt.verify(token, process.env.jwtPassword);
-
   if (username) {
     console.log(username);
     res.json({ UserToken: username });

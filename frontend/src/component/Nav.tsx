@@ -24,7 +24,7 @@ const Nav: React.FC<NavProps> = ({ userName }) => {
       .then((res) => {
         console.log(res.data.data);
         console.log(typeof res.data.data.timestamp);
-        setUserList(res.data.data);
+        setUserList(res.data.data); 
       });
   }, []);
 
@@ -32,7 +32,7 @@ const Nav: React.FC<NavProps> = ({ userName }) => {
   return (
     <div className="flex flex-col gap-1 bg-black text-white h-full w-1/6 justify-between">
       <div>
-        <h4 className="text-3xl m-1">{userName ? userName : "Guest"}</h4>{" "}
+        <h4 className="text-3xl m-1">{userName ? userName : "Guest"}</h4>{" "} 
         <div className="py-1">
           {usersList.map((item) => (
             <Link to={`/user/${item.id}`}>{item.username}</Link>

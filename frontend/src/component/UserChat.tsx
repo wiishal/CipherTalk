@@ -54,11 +54,11 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
   useEffect(() => {
     if (socket) {
       socket.emit("register", username);
-      const currentUserToken = localStorage.getItem("userToken");
-      const targetUser = user;
+      const senderUserToken = localStorage.getItem("userToken");
+      const receiverUser = user;
 
       // Emit the fetch-chats event with both user IDs
-      socket.emit("fetch-chats", { currentUserToken, targetUser });
+      socket.emit("fetch-chats", { senderUserToken, receiverUser });
 
       socket.on("chat-history", (chats) => {
         console.log("Received chat history:", chats);

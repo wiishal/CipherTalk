@@ -4,11 +4,13 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 require("dotenv").config();
 
+//services
+const { fetchChat }= require("../services/messageServices");
+
 let users = {};
 
 const setUpSocket = (server) => {
   console.log("Socket server initialized");
-
   const io = new Server(server, {
     cors: {
       origin: "*",
@@ -29,48 +31,28 @@ const setUpSocket = (server) => {
       console.log(`User ${user.id} connected with socket ID: ${socket.id}`);
 
       socket.on("register", (username) => {
-        users[user.id] = socket.id; 
+        users[user.id] = socket.id;
         console.log(`${user.id} registered with ID: ${socket.id}`);
       });
 
-     socket.on("fetch-chats", async ({ userId1, userId2 }) => {
-       try {
-      
-         const userChats = await prisma.message.findMany({
-           where: {
-             AND: [
-               {
-                 OR: [
-                   {
-                     senderId: userId1,
-                     receiverId: userId2,
-                   },
-                   {
-                     senderId: userId2,
-                     receiverId: userId1,
-                   },
-                 ],
-               },
-             ],
-           },
-           orderBy: {
-             timestamp: "asc",
-           },
-         });
+      socket.on("fetch-chats", async ({ senderUserToken, receiverUser }) => {
+        try {
+          let targetedUser = Number(receiverUser);
+          const user = jwt.verify(senderUserToken, process.env.jwtPassword);
+          const currenUser = Number(user.id);
+          const userChats = await fetchChat(currenUser, targetedUser);
 
-       
-         socket.emit("chat-history", userChats);
-       } catch (error) {
-         console.error("Error fetching chats:", error);
-       
-       }
-     });
+          socket.emit("chat-history", userChats);
+        } catch (error) {
+          console.error("Error fetching chats:", error);
+        }
+      });
 
       socket.on("chat-message", (msg) => {
         console.log(msg, users);
         io.to(users[msg.toUser]).emit("receiveMessage", {
-          text: msg.message, 
-          from: user.id, 
+          text: msg.message,
+          from: user.username,
         });
       });
     } catch (err) {
