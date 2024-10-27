@@ -23,8 +23,25 @@ async function fetchChat(currenUser, targetedUser) {
     return userChats;
   } catch (error) {
     console.log("Error while Fetching chats", error);
+    return false
+  }
+}
+
+async function insertChat(currentUser, receiveMessageUser,message) {
+  try {
+    const newChat = prisma.message.create({
+      data: {
+        senderId: currentUser,
+        receiverId: receiveMessageUser,
+        content: message,
+      },
+    });
+    return newChat;
+  } catch (error) {
+    console.log("Error while Creating chat", error);
+    return false
   }
 }
 
 
-module.exports = {fetchChat}
+module.exports = { fetchChat, insertChat };
