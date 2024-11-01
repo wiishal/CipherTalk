@@ -57,7 +57,7 @@ const setUpSocket = (server) => {
           const userChats = await fetchChat(currenUser, targetedUser);
           if (!userChats) {
              socket.emit("chat-history", { message: "No chat history found." });
-             return
+             return;
           }
           socket.emit("chat-history", userChats);
         } catch (error) {
@@ -66,14 +66,20 @@ const setUpSocket = (server) => {
       });
 
       //sending event
-      socket.on("chat-message", (msg) => {
-        // if (!users[msg.toUser].socketId){
-        //   return;
-        // }
+      socket.on("chat-message", async(msg) => {
+
+        if (!users[msg.toUser]){
+          console.log("Returning from Chat-msg ")
+          return;
+        }
 
         //error handling require
         console.log(msg, users[msg.toUser].socketId , "currentuser",user);
-        
+
+          const recentChat = await insertChat(user.id, msg.toUser,msg.message)
+          if(!recentChat){
+            console.log('Error while chat Saving')
+          }
           io.to(users[msg.toUser].socketId).emit("receiveMessage", {
             text: msg.message,
             from: user.username,

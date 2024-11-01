@@ -4,6 +4,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Chat from "./page/Chat";
 import SignUp from "./auth/SignUp";
 import { UserListProvider } from "./context/context"; 
+
+
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 

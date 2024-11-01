@@ -27,13 +27,21 @@ async function fetchChat(currenUser, targetedUser) {
   }
 }
 
-async function insertChat(currentUser, receiveMessageUser,message) {
+async function insertChat(currentUser, receiveMessageUser,messageText) {
+
+   console.log(
+     `sender : ${currentUser} received : ${receiveMessageUser} msg : ${messageText}`
+   );
+   
+   const receiver = parseInt(receiveMessageUser, 10)
+   console.log(typeof currentUser, typeof receiver);
+
   try {
     const newChat = prisma.message.create({
       data: {
         senderId: currentUser,
-        receiverId: receiveMessageUser,
-        content: message,
+        receiverId: receiver,
+        content: messageText,
       },
     });
     return newChat;
@@ -41,6 +49,7 @@ async function insertChat(currentUser, receiveMessageUser,message) {
     console.log("Error while Creating chat", error);
     return false
   }
+    
 }
 
 
