@@ -45,7 +45,6 @@ const setUpSocket = (server) => {
       //fetching chat history
       socket.on("fetch-chats", async ({ senderUserToken, receiverUser }) => {
         try {
-          
           let targetedUser = parseInt(receiverUser, 10);
           if (isNaN(targetedUser)) {
             socket.emit("chat-history", { error: "Invalid receiver user ID." });
@@ -65,21 +64,22 @@ const setUpSocket = (server) => {
         }
       });
 
-      //sending event
+
+
+
+      //sending event and saving chat
       socket.on("chat-message", async(msg) => {
 
         if (!users[msg.toUser]){
           console.log("Returning from Chat-msg ")
           return;
         }
-
-        //error handling require
+     
         console.log(msg, users[msg.toUser].socketId , "currentuser",user);
-
-          const recentChat = await insertChat(user.id, msg.toUser,msg.message)
-          if(!recentChat){
-            console.log('Error while chat Saving')
-          }
+          // const recentChat = await insertChat(user.id, msg.toUser,msg.message)
+          // if(!recentChat){
+          //   console.log('Error while chat Saving')
+          // }
           io.to(users[msg.toUser].socketId).emit("receiveMessage", {
             text: msg.message,
             from: user.username,

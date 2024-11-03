@@ -13,10 +13,11 @@ export default function App() {
     const usertoken = localStorage.getItem("userToken");
     if (usertoken) {
       setIsLoggedIn(true);
+      console.log(setIsLoggedIn)
     } else {
       setIsLoggedIn(false);
     }
-  }, []);
+  }, [setIsLoggedIn]);
   if (isLoggedIn === null) {
     return <div>Loading...</div>;
   }

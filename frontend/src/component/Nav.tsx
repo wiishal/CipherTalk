@@ -35,7 +35,9 @@ const Nav: React.FC<NavProps> = ({ userName }) => {
         <h4 className="text-3xl m-1">{userName ? userName : "Guest"}</h4>{" "}
         <div className="py-1">
           {usersList.map((item) => (
-            <Link to={`/user/${item.id}`}>{item.username}</Link>
+            <div className="border border-black bg-gray-800  font-medium capitalize p-2">
+              <Link to={`/user/${item.id}`}>{item.username}</Link>
+            </div>
           ))}
         </div>
       </div>

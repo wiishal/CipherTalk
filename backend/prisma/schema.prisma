@@ -29,7 +29,7 @@ model Message {
   receiverId  Int
   content     String
   timestamp   DateTime @default(now())
-  
+  encrypt     Boolean  @default(false)
   sender      user     @relation("SentMessages", fields: [senderId], references: [id])
   receiver    user     @relation("ReceivedMessages", fields: [receiverId], references: [id])
 } 

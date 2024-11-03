@@ -3,28 +3,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 
-interface RouteParams {
-  user: String | "";
-  
-}
-interface UserChatProps {
-  socket: Socket | null;
-}
-interface Chat{
-  id: Number; senderId: Number; receiverId: Number; content: String; timestamp: String;
-}
-
-interface msg{
-
-}
 
 const UserChat: React.FC<UserChatProps> = ({ socket }) => {
   const [message, setMessage] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [encrypt, setEncrypt] = useState<boolean>(false);
+  const [encryptMsg, setEncryptMsg] = useState<string>("");
 
-  const [messages, setMessages] = useState<{ text: String; from: String }[]>(
-    []
-  ); // Storing both message text and sender info
+  const [messages, setMessages] = useState<{ text: String; from: String }[]>([]); 
   const url = "http://localhost:3000";
   const { user } = useParams<keyof RouteParams>();
 
@@ -43,13 +29,6 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
       });
   }, [user]);
 
-  /*
-0
-: 
-{id: 3, senderId: 2, receiverId: 3, content: 'hii', timestamp: '2024-10-03T15:11:05.205Z'}
-1
-: 
-{id: 7, senderId: 3, receiverId: 2, content: 'hi', timestamp: '2024-10-10T15:58:52.748Z'} */
 
   useEffect(() => {
     if (socket) {
@@ -63,15 +42,11 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
       socket.on("chat-history", (chats) => {
         console.log("Received chat history:", chats);
         let msg: { text: String; from: string }[] = [];
-        const recievedMsgUser = Number(user)
-        chats.forEach((element : Chat) => {
-          if (
-            element.senderId == recievedMsgUser 
-          ) {
-            
+        const recievedMsgUser = Number(user);
+        chats.forEach((element: Chat) => {
+          if (element.senderId == recievedMsgUser) {
             msg.push({ text: element.content, from: username });
-          }
-          else{
+          } else {
             msg.push({ text: element.content, from: "me" });
           }
         });
@@ -85,8 +60,6 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
       });
       console.log(messages);
     }
-
-  
   }, [username]);
 
   const sendMessage = () => {
@@ -104,9 +77,20 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
   };
 
   return (
-    <div className="size-full bg-gray-950 text-white">
-      <h2>Chat with {username}</h2>
-      <div className="flex-col  h-5/6">
+    <div className="size-full bg-gray-950 text-white p-2">
+      <div className="flex gap-2">
+        <p className="text-3xl font-medium capitalize">{username}</p>
+        <button
+          className=" rounded-xl bg-blue-800 text-cyan-50 font-medium  p-2"
+          onClick={() => {
+            setEncrypt((prev) => !prev);
+          }}
+        >
+          {" "}
+          {encrypt ? "Encryption Mode" : "Enable Encrypt"}{" "}
+        </button>
+      </div>
+      <div className="flex-col h-5/6 p-3 bg-slate-900 rounded-3xl">
         {messages.map((msg, index) => (
           <p
             key={index}
@@ -116,24 +100,57 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
           </p>
         ))}
       </div>
-      <div className="flex  gap-1">
-        <input
-          className="text-black p-2"
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type your message"
-        />
+      {encrypt ? (
+        <div className="flex  gap-1">
+          <input
+            className="text-white p-2 w-5/6 border rounded-3xl  border-green-400 bg-gray-700"
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type your message"
+          />
 
-        <button
-          className=" p-2 rounded-md bg-blue-600 text-white"
-          onClick={sendMessage}
-        >
-          Send
-        </button>
-      </div>
+          <button
+            className=" p-2  rounded-3xl bg-blue-600 text-white"
+            onClick={sendMessage}
+          >
+            Send
+          </button>
+        </div>
+      ) : (
+        <div className="flex  gap-1">
+          <input
+            className="text-white p-2 w-5/6 border rounded-3xl bg-gray-900 "
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type your message"
+          />
+
+          <button
+            className=" p-2  rounded-3xl bg-blue-600 text-white"
+            onClick={sendMessage}
+          >
+            Send
+          </button>
+        </div>
+      )}
     </div>
   );
 };
+
+interface RouteParams {
+  user: String | "";
+}
+interface UserChatProps {
+  socket: Socket | null;
+}
+interface Chat {
+  id: Number;
+  senderId: Number;
+  receiverId: Number;
+  content: String;
+  timestamp: String;
+}
 
 export default UserChat;
