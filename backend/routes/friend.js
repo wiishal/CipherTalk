@@ -39,6 +39,7 @@ friendRouter.post(
       }
 
       const userFind = { username: user.username, userid: user.id };
+      
       return res.status(200).json({ userFind, msg: "success!" });
     } catch (error) {
       console.error("Error during verification process", error);

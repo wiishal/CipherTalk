@@ -1,19 +1,25 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { io, Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
+import SetKey from "./SetKey";
 
 
 const UserChat: React.FC<UserChatProps> = ({ socket }) => {
   const [message, setMessage] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [messages, setMessages] = useState<{ text: String; from: String }[]>([]); 
+  
   const [encrypt, setEncrypt] = useState<boolean>(false);
   const [encryptMsg, setEncryptMsg] = useState<string>("");
-
-  const [messages, setMessages] = useState<{ text: String; from: String }[]>([]); 
+  //checking isencryption is set for sending encryption text
+  const [isEncryptionKeySet, setEncryptionKeySet] = useState<boolean>(false);
+  const [isEncryptionKeySetDiv, setEncryptionKeySetDiv] = useState<boolean>(false);
+  
   const url = "http://localhost:3000";
   const { user } = useParams<keyof RouteParams>();
-
+  
+  console.log(isEncryptionKeySet)
   useEffect(() => {
     const token = localStorage.getItem("userToken");
     axios
@@ -60,7 +66,7 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
       });
       console.log(messages);
     }
-  }, [username]);
+  }, [username, isEncryptionKeySet]);
 
   const sendMessage = () => {
     if (message.trim() && socket) {
@@ -71,15 +77,26 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: message, from: "me" },
-      ]);
+      ]); 
       setMessage("");
     }
   };
+  const sendEncryptedMessage = () => {
+    console.log(encryptMsg)
+    if(isEncryptionKeySet === false){
+      alert('set encryption key')
+      return
+    }
+  }
 
   return (
-    <div className="size-full bg-gray-950 text-white p-2">
+    <div className="size-full bg-neutral-900 text-white p-2">
+      {isEncryptionKeySetDiv && (
+        <SetKey setEncryptionKeySet={setEncryptionKeySet} />
+      )}
       <div className="flex gap-2">
         <p className="text-3xl font-medium capitalize">{username}</p>
+        {!isEncryptionKeySet && <p>hii</p>}
         <button
           className=" rounded-xl bg-blue-800 text-cyan-50 font-medium  p-2"
           onClick={() => {
@@ -90,7 +107,7 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
           {encrypt ? "Encryption Mode" : "Enable Encrypt"}{" "}
         </button>
       </div>
-      <div className="flex-col h-5/6 p-3 bg-slate-900 rounded-3xl">
+      <div className="flex-col h-5/6 p-3 bg-neutral-800 rounded-3xl">
         {messages.map((msg, index) => (
           <p
             key={index}
@@ -101,23 +118,33 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
         ))}
       </div>
       {encrypt ? (
+        // for encryption
         <div className="flex  gap-1">
           <input
-            className="text-white p-2 w-5/6 border rounded-3xl  border-green-400 bg-gray-700"
+            className="text-white p-2 w-5/6 border rounded-3xl  border-green-400 bg-neutral-800"
             type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            value={encryptMsg}
+            onChange={(e) => setEncryptMsg(e.target.value)}
             placeholder="Type your message"
           />
 
           <button
             className=" p-2  rounded-3xl bg-blue-600 text-white"
-            onClick={sendMessage}
+            onClick={sendEncryptedMessage}
           >
             Send
           </button>
+         
+            <button
+              onClick={() => setEncryptionKeySetDiv((prev) => !prev)}
+              className="bg-red-800 text-white p-2 rounded-xl capitalize"
+            >
+              {isEncryptionKeySetDiv ? "Cancle" : "Set Key"}
+            </button>
+        
         </div>
       ) : (
+        // normal text
         <div className="flex  gap-1">
           <input
             className="text-white p-2 w-5/6 border rounded-3xl bg-gray-900 "

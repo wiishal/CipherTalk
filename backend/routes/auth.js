@@ -50,8 +50,8 @@ router.post("/signUp", creadentialTypeCheck, async (req, res) => {
   const isvalid = await creadentialCheck(userName, userEmail);
 
   if (isvalid) {
-    const id = await createUser(userName, userEmail, userPassword);
-    console.log(`user Created, id : ${id}`);
+    const user = await createUser(userName, userEmail, userPassword);
+    console.log(`user Created, id : ${user.id}`);
     const token = jwt.sign(
       { username: user.username, id: user.id },
       process.env.jwtPassword

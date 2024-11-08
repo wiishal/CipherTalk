@@ -18,7 +18,7 @@ model user {
   email       String    @unique
   username    String    @unique
   password    String
-  
+  keyStatus   Boolean   @default(false)
   sentMessages    Message[] @relation("SentMessages")    
   receivedMessages Message[] @relation("ReceivedMessages")
 }
@@ -30,6 +30,7 @@ model Message {
   content     String
   timestamp   DateTime @default(now())
   encrypt     Boolean  @default(false)
+  salt        String? 
   sender      user     @relation("SentMessages", fields: [senderId], references: [id])
   receiver    user     @relation("ReceivedMessages", fields: [receiverId], references: [id])
 } 

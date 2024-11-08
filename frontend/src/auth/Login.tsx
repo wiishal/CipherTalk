@@ -40,15 +40,12 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
   };
 
   return (
-    <div className=" size-full flex justify-center items-center">
+    <div className=" size-full flex justify-center items-center text-white">
       <form
         className=" h-2.5/4 w-2/4 rounded p-4 flex flex-col flex-wrap space-y-4"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <label
-          htmlFor="username"
-          className="font-semibold text-lg text-gray-700"
-        >
+        <label htmlFor="username" className="font-semibold text-lg text-white">
           Username
         </label>
         <input
@@ -58,8 +55,7 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
           {...register("name", { required: true })}
         />
 
-      
-        <label htmlFor="email" className="font-semibold text-lg text-gray-700">
+        <label htmlFor="email" className="font-semibold text-lg text-white">
           Password
         </label>
         <div>
@@ -67,7 +63,7 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
             id="password"
             type={passwordVisibility ? "password" : ""}
             placeholder="Enter Password"
-            className="ml-1 w-48 border border-sky-500 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="ml-1 w-48 border text-gray-700 border-sky-500 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
             {...register("password", { required: true })}
           />{" "}
           <button

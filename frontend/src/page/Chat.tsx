@@ -44,7 +44,7 @@ function Chat() {
   }, []);
 
   return (
-    <>
+    < >
       <Nav userName={userName || "Guest"} />
       <Routes>
         <Route path="/" element={<Home />}></Route>

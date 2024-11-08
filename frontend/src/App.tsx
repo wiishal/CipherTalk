@@ -23,9 +23,9 @@ export default function App() {
   }
 
   return (
-    <div className="h-screen w-screen">
-      {!isLoggedIn ? (
-        <BrowserRouter>
+    <div className="h-screen w-screen bg-neutral-900">
+      <BrowserRouter>
+        {!isLoggedIn ? (
           <Routes>
             <Route
               path="/"
@@ -33,16 +33,14 @@ export default function App() {
             ></Route>
             <Route path="/SignUp" element={<SignUp />}></Route>
           </Routes>
-        </BrowserRouter>
-      ) : (
-        <div className="flex flex-row h-full">
-          <BrowserRouter>
-          <UserListProvider>
-            <Chat />
-          </UserListProvider>
-          </BrowserRouter>
-        </div>
-      )}
+        ) : (
+          <div className="flex flex-row h-full">
+            <UserListProvider>
+              <Chat />
+            </UserListProvider>
+          </div>
+        )}
+      </BrowserRouter>
     </div>
   );
 }

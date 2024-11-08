@@ -30,12 +30,12 @@ const Nav: React.FC<NavProps> = ({ userName }) => {
 
   console.log(users);
   return (
-    <div className="flex flex-col gap-1 bg-black text-white h-full w-1/6 justify-between pb-5 p-3">
+    <div className="flex flex-col gap-1 bg-neutral-900 text-white  rounded-xl h-full w-1/6 justify-between pb-5 p-2">
       <div>
-        <h4 className="text-3xl m-1">{userName ? userName : "Guest"}</h4>{" "}
+        <h4 className="text-3xl m-1 border border-black capitalize font-semibold  border-b-neutral-300 p-2 b ">{userName ? userName : "Guest"}</h4>{" "}
         <div className="py-1">
           {usersList.map((item) => (
-            <div className="border border-black bg-gray-800  font-medium capitalize p-2">
+            <div className="border border-black bg-neutral-800 rounded-xl font-medium capitalize p-4">
               <Link to={`/user/${item.id}`}>{item.username}</Link>
             </div>
           ))}

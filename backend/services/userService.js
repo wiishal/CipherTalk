@@ -12,7 +12,7 @@ async function createUser(userName, email, password) {
       },
     });
 
-    return newUser.id;
+    return newUser;
   } catch (error) {
     console.log("Error While Creating user", error);
   }
@@ -76,7 +76,7 @@ async function getUser(userName) {
   try {
     const user = prisma.user.findUnique({
       where:{
-        username:userName
+        username: userName
       }
     })
 
@@ -86,4 +86,21 @@ async function getUser(userName) {
     return false;
   }
 }
-module.exports = { createUser, verifyUser, getUsers, searchUser, getUser };
+
+async function checkKeyStatus(userId){
+try {
+    const user = prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        keyStatus: true,
+      },
+    });
+    
+    return user
+} catch (error) {
+   console.log("Error while checkKeyStatus", error);
+}
+}
+module.exports = { createUser, verifyUser, getUsers, searchUser, getUser, checkKeyStatus };

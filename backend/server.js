@@ -12,14 +12,17 @@ const server = http.createServer(app);
 
 
 const setupSocket = require("./routes/message"); 
+
 const authRouter = require("./routes/auth");
 const friendRouter = require("./routes/friend");
+const encryptRouter = require("./routes/encryptionHandler")
 
 
 
 //routers
 app.use("/auth", authRouter);
-app.use("/Friend",friendRouter)
+app.use("/Friend",friendRouter);
+app.use("/encrypt",encryptRouter);
 
 //creating server for socket
 setupSocket(server)
