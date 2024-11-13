@@ -1,32 +1,61 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { checkKeyStatus, changeKeystatus } from "../sevices/encryptServices";
+import { generateKey } from "../encryption/encryptionUtil";
 
-const SetKey: React.FC<SetKeyProps> = ({ setEncryptionKeySet }) => {
-  const url = "http://localhost:3000";
-  const [key, SetKey] = useState<string>("")
-  const [isShowPass,setIsShowPass] = useState<boolean>(false);
-  const [keystatus,setKeystatus] = useState<boolean>(false);
+const SetKey: React.FC = () => {
+  const [key, SetKey] = useState<string>("");
+  const [isShowPass, setIsShowPass] = useState<boolean>(false);
+  const [keystatus, setKeystatus] = useState<boolean>(false);
+  const [setkeyAvailability, setSetkeyAvailability] = useState<boolean>(false);
 
-  useEffect(()=>{
-     const token = localStorage.getItem("userToken");
-     
-     axios
-       .post(`${url}/encrypt/verifyKetStatus`, {
-         usertoken: token,
-       })
-       .then((res) => {
-         console.log(res.data);
-         setEncryptionKeySet(res.data.keystatus);
-         // setKeystatus(res.data.keystatus);
-         setKeystatus(true);
-         setEncryptionKeySet(true);
-       })
-       .catch((err) => {
-         console.error("Error verifying key status:", err);
-       });
-  },[])
-  function generateKey(){
+  useEffect(() => {
+    const fetchkeyStatus = async () => {
+      const token = localStorage.getItem("userToken");
+      try {
+        if (token) {
+          const response = await checkKeyStatus(token);
+          if (response) {
+            setKeystatus(response.keystatus);
+            setSetkeyAvailability(!response.keystatus);
+          }
+        }
+      } catch (error) {
+        alert("Error while geting keystatus");
+      }
+    };
 
+    fetchkeyStatus();
+  }, []);
+
+  async function generateEncryptionkey() {
+    const key = await generateKey();
+    if (key) SetKey(key);
+  }
+
+  async function setKeyInsession() {
+    if (setkeyAvailability === true) {
+      alert("can set from here");
+      return;
+    }
+    if (key === "") {
+      alert("can set empty key");
+      return;
+    }
+    alert("Are You Sure !! You Wanted to Set Encyption Key");
+    const token = localStorage.getItem("userToken");
+    try {
+      if (token) {
+        const responce = await changeKeystatus(token);
+        if (responce) {
+          setKeystatus(responce.keystatus);
+        }
+      }
+    } catch (error) {
+      alert("something wrong!happend while seting key status");
+    }
+    sessionStorage.setItem("keyforthesession", key);
+    alert("key is set");
+    alert("it only set for the current session");
   }
 
   return (
@@ -39,7 +68,7 @@ const SetKey: React.FC<SetKeyProps> = ({ setEncryptionKeySet }) => {
           value={key}
           type={isShowPass ? "text" : "password"}
           readOnly
-          className="rounded bg-neutral-700 text-wrap"
+          className="rounded bg-neutral-700 text-wrap w-5/6 p-1 h-11"
         />
         <button
           onClick={() => {
@@ -51,20 +80,22 @@ const SetKey: React.FC<SetKeyProps> = ({ setEncryptionKeySet }) => {
       </div>
       <div className="p-2 my-6">
         {!keystatus ? (
-          <button className="p-2 rounded-sm bg-blue-900" onClick={generateKey}>
+          <button
+            className="p-2 rounded-sm bg-blue-900"
+            onClick={generateEncryptionkey}
+          >
             Generate
           </button>
         ) : (
-          <button className="p-2 rounded-sm bg-blue-900" onClick={generateKey}>
+          <button className="p-2 rounded-sm bg-blue-900">
             already key is set Generate
           </button>
         )}
+        <button onClick={setKeyInsession}>Set Key </button>
       </div>
+      <div>{keystatus ? <p>key is set</p> : <p>key is not set</p>}</div>
     </div>
   );
 };
 
-interface SetKeyProps {
-  setEncryptionKeySet: React.Dispatch<React.SetStateAction<boolean>>;
-}
 export default SetKey;
