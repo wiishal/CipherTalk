@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const router = express.Router();
-
+ 
 //Middleware
 const creadentialTypeCheck = require("../middleware/typeCheck/creadentialTypeCheck");
 const tokenAuthenticationMiddleware = require("../middleware/tokenAuthenticationMiddleware");

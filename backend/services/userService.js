@@ -75,20 +75,20 @@ async function searchUser(query) {
 async function getUser(userName) {
   try {
     const user = prisma.user.findUnique({
-      where:{
-        username: userName
-      }
-    })
+      where: {
+        username: userName,
+      },
+    });
 
     return user;
   } catch (error) {
-    console.log("Error while getting User",error);
+    console.log("Error while getting User", error);
     return false;
   }
 }
 
-async function checkKeyStatus(userId){
-try {
+async function checkKeyStatus(userId) {
+  try {
     const user = prisma.user.findUnique({
       where: {
         id: userId,
@@ -97,10 +97,35 @@ try {
         keyStatus: true,
       },
     });
-    
-    return user
-} catch (error) {
-   console.log("Error while checkKeyStatus", error);
+
+    return user;
+  } catch (error) {
+    console.log("Error while checkKeyStatus", error);
+  }
 }
+
+async function setKeyStatus(userId) {
+  try {
+    const user = prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data:{
+        keyStatus:true,
+      },
+    });
+
+    return user;
+  } catch (error) {
+    console.log("Error while checkKeyStatus", error);
+  }
 }
-module.exports = { createUser, verifyUser, getUsers, searchUser, getUser, checkKeyStatus };
+module.exports = {
+  createUser,
+  verifyUser,
+  getUsers,
+  searchUser,
+  getUser,
+  checkKeyStatus,
+  setKeyStatus,
+};
