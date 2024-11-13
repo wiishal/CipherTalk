@@ -30,7 +30,6 @@ function Chat() {
 
   useEffect(() => {
     const token = localStorage.getItem("userToken");
-
     if (token) {
       const newSocket = io("http://localhost:3000", {
         auth: { token: token },

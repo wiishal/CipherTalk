@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { signup } from "../sevices/authentication";
 
 interface FormValues {
   name: string;
@@ -11,31 +11,18 @@ interface FormValues {
 
 
 const SignUp: React.FC = () => {
-  const url = "http://localhost:3000";
   const [isSignUpComplete, setIsSignUpComplete] = useState<boolean>(false);
   const { register, handleSubmit } = useForm<FormValues>();
   const [passwordVisibility, setPasswordVisibility] = useState<boolean>(true);
+  
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    axios
-      .post(`${url}/auth/signUp`, {
-        userName: data.name,
-        userEmail: data.email,
-        userPassword: data.password,
-      })
-      .then((response) => {
-        console.log(response.status);
-        if(response.status == 200){
-          console.log(response.data.token)
-          localStorage.setItem("userToken",response.data.token);
-          setIsSignUpComplete(true)
-        }
-      })
-      .catch((error) => {
-        console.error(
-          "Error during login:",
-          error.response?.status || error.message
-        );
-      });
+   const token = await signup(data.name,data.email, data.password);
+    if (!token) {
+      alert("error");
+      return;
+    }
+    localStorage.setItem("userToken", token);
+    setIsSignUpComplete(true);
   };
 
   return (
