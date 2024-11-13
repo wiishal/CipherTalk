@@ -3,21 +3,36 @@ import Login from "./auth/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Chat from "./page/Chat";
 import SignUp from "./auth/SignUp";
-import { UserListProvider } from "./context/context"; 
-
+import { UserListProvider } from "./context/context";
+import axios from "axios";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const usertoken = localStorage.getItem("userToken");
-    if (usertoken) {
-      setIsLoggedIn(true);
-      console.log(setIsLoggedIn)
-    } else {
-      setIsLoggedIn(false);
+    const token = localStorage.getItem("userToken");
+    async function checkToken() {
+      try {
+        if (token) {
+          const response = await axios.post(
+            `http://localhost:3000/auth/verifyToken`,
+            {
+              usertoken: token,
+            }
+          );
+          if (response) {
+            setIsLoggedIn(true);
+          }
+        } else {
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        console.log("error while log in");
+      }
     }
-  }, [setIsLoggedIn]);
+    checkToken();
+  }, []);
+
   if (isLoggedIn === null) {
     return <div>Loading...</div>;
   }

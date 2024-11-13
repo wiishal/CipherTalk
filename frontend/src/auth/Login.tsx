@@ -1,42 +1,23 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { login } from "../sevices/authentication";
 
-interface FormValues {
-  name: string;
-  
-  password: string;
-}
-interface LoginProps {
-  setIsLoggedIn: (value: boolean) => void;
-}
 
 const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
-  const url = "http://localhost:3000";
   const { register, handleSubmit } = useForm<FormValues>();
   const [passwordVisibility, setPasswordVisibility] = useState<boolean>(true);
 
   
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    axios
-      .post(`${url}/auth/login`, {
-        userName: data.name,
-        userPassword: data.password,
-      })
-      .then((response) => {
-        console.log(response);
-        localStorage.setItem("userToken", response.data.token);
-        setIsLoggedIn(true);
-      })
-      .catch((error) => {
-        console.error(
-          "Error during login:",
-          error.response?.status || error.message
-        );
-      });
 
-   
+    const token = await login(data.name,data.password)
+    if(!token){
+      alert("error");
+      return;
+    }
+    localStorage.setItem("userToken", token);
+    setIsLoggedIn(true);
   };
 
   return (
@@ -85,5 +66,16 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
     </div>
   );
 };
+
+interface FormValues {
+  name: string;
+
+  password: string;
+}
+interface LoginProps {
+  setIsLoggedIn: (value: boolean) => void;
+}
+
+
 
 export default Login;
