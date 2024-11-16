@@ -6,7 +6,7 @@ export async function checkKeyStatus(token: String): Promise<keystatus | null> {
     const response = await axios.post(`${url}/encrypt/verifyKetStatus`, {
       usertoken: token,
     });
-    return response.data.keystatus;
+    return response.data;
   } catch (error) {
     console.log("Error while getting keystatus");
     return null;
@@ -18,7 +18,7 @@ export async function changeKeystatus(token: string) {
     const response = await axios.post(`${url}/encrypt/setKeystatus`, {
       usertoken: token,
     });
-    return response.data.keystatus;
+    return response.data;
   } catch (error) {
     console.log("error while setting key!");
   }

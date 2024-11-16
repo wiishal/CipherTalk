@@ -26,13 +26,13 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
         className=" h-2.5/4 w-2/4 rounded p-4 flex flex-col flex-wrap space-y-4"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <label htmlFor="username" className="font-semibold text-lg text-white">
+        <label htmlFor="username" className="font-semibold text-lg  text-white">
           Username
         </label>
         <input
           id="username"
           placeholder="Enter username"
-          className="w-64 border border-sky-500 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+          className="w-64 border bg-neutral-800 border-sky-500 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
           {...register("name", { required: true })}
         />
 
@@ -44,7 +44,7 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
             id="password"
             type={passwordVisibility ? "password" : ""}
             placeholder="Enter Password"
-            className="ml-1 w-48 border text-gray-700 border-sky-500 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="ml-1 w-48 border text-white bg-neutral-800 border-sky-500 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
             {...register("password", { required: true })}
           />{" "}
           <button

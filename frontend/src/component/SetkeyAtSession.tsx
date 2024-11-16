@@ -35,6 +35,7 @@ export const SetkeyAtSession: React.FC<setkeyprops> = ({ SetStoreKeyAtSession })
       >
         Set Key{" "}
       </button>
+      <button onClick={()=>{SetStoreKeyAtSession(false)}} className="m-1 bg-red-700 p-2 rounded-sm">cancel</button>
     </div>
   );
 };

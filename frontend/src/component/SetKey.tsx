@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { checkKeyStatus, changeKeystatus } from "../sevices/encryptServices";
 import { generateKey } from "../encryption/encryptionUtil";
 
-const SetKey: React.FC = () => {
+const SetKey: React.FC<{
+  setEncryptionKeySet: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ setEncryptionKeySet }) => {
   const [key, SetKey] = useState<string>("");
   const [isShowPass, setIsShowPass] = useState<boolean>(false);
   const [keystatus, setKeystatus] = useState<boolean>(false);
@@ -16,7 +18,8 @@ const SetKey: React.FC = () => {
           const response = await checkKeyStatus(token);
           if (response) {
             setKeystatus(response.keystatus);
-            setSetkeyAvailability(!response.keystatus);
+            setEncryptionKeySet(response.keystatus);
+            setSetkeyAvailability(response.keystatus);
           }
         }
       } catch (error) {
@@ -38,7 +41,7 @@ const SetKey: React.FC = () => {
       return;
     }
     if (key === "") {
-      alert("can set empty key");
+      alert("cant set empty key");
       return;
     }
     alert("Are You Sure !! You Wanted to Set Encyption Key");
