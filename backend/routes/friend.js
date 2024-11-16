@@ -38,9 +38,7 @@ friendRouter.post(
         return res.status(404).json({ msg: "User not found!" });
       }
 
-      const userFind = { username: user.username, userid: user.id };
-      
-      return res.status(200).json({ userFind, msg: "success!" });
+      const userFind = { username: user.username, userid: user.id };      return res.status(200).json({ userFind, msg: "success!" });
     } catch (error) {
       console.error("Error during verification process", error);
       return res.status(500).json({ msg: "Internal Server Error" });
