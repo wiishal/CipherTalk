@@ -76,13 +76,18 @@ const setUpSocket = (server) => {
         }
      
         console.log(msg, users[msg.toUser].socketId , "currentuser",user);
+
+
           // const recentChat = await insertChat(user.id, msg.toUser,msg.message)
           // if(!recentChat){
           //   console.log('Error while chat Saving')
           // }
+
           io.to(users[msg.toUser].socketId).emit("receiveMessage", {
             text: msg.message,
             from: user.username,
+            encrypt: msg.encrypt,
+            salt:msg.salt,
           });
       });
 
