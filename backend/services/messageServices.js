@@ -27,7 +27,7 @@ async function fetchChat(currenUser, targetedUser) {
   }
 }
 
-async function insertChat(currentUser, receiveMessageUser, messageText) {
+async function insertChat(currentUser, receiveMessageUser, messageText,msgEncryptStatus,msgSalt) {
   console.log(
     `sender : ${currentUser} received : ${receiveMessageUser} msg : ${messageText}`
   );
@@ -41,7 +41,8 @@ async function insertChat(currentUser, receiveMessageUser, messageText) {
         senderId: currentUser,
         receiverId: receiver,
         content: messageText,
-        encrypt:false,
+        encrypt: msgEncryptStatus,
+        salt: msgSalt,
       },
     });
     return newChat;
