@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { useUserList } from "../context/context";
+import { useUserList } from "../context/UserListContext";
 
 interface User {
   username: string;
@@ -29,8 +29,8 @@ const Search: React.FC = () => {
       });
   }
   const addUser = (user: User) => {
-    console.log(user)
-    setUsers([...users, user]); 
+    console.log(user);
+    setUsers([...users, user]);
   };
   return (
     <div className="size-full bg-gray-950 text-white">
@@ -46,7 +46,7 @@ const Search: React.FC = () => {
           className="bg-blue-700  text-white p-2 rounded"
           onClick={seachQuery}
         >
-        Search
+          Search
         </button>
         <div>
           {searchResult.map((item) => (
@@ -55,7 +55,10 @@ const Search: React.FC = () => {
               key={item.userid}
             >
               <h4 className="m-1">{item.username}</h4>
-              <button className="bg-blue-500 p-1 rounded" onClick={()=>addUser(item)}>
+              <button
+                className="bg-blue-500 p-1 rounded"
+                onClick={() => addUser(item)}
+              >
                 msg
               </button>
             </div>
