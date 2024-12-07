@@ -31,12 +31,14 @@ async function verifyUser(userid) {
     return false;
   }
 }
-
 async function getUsers(currentUser) {
   try {
     const userlist = await prisma.message.findMany({
       where: {
-        receiverId: currentUser.id,
+        OR: [
+          { senderId: currentUser.id }, 
+          { receiverId: currentUser.id }, 
+        ],
       },
       select: {
         sender: {
@@ -45,18 +47,34 @@ async function getUsers(currentUser) {
             username: true,
           },
         },
+        receiver: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
       },
-      distinct: ["senderId"],
     });
 
-    const uniqueUsers = userlist.map((message) => message.sender);
+    const uniqueUsersMap = new Map();
+
+    userlist.forEach((message) => {
+      if (message.sender.id !== currentUser.id) {
+        uniqueUsersMap.set(message.sender.id, message.sender);
+      }
+      if (message.receiver.id !== currentUser.id) {
+        uniqueUsersMap.set(message.receiver.id, message.receiver);
+      }
+    });
+
+    // Convert map to an array of unique users
+    const uniqueUsers = Array.from(uniqueUsersMap.values());
     return uniqueUsers;
   } catch (error) {
     console.log("Error While getting User", error);
     return false;
   }
 }
-
 async function searchUser(query) {
   try {
     const user = await prisma.user.findFirst({
