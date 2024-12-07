@@ -3,7 +3,8 @@ import Login from "./auth/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Chat from "./page/Chat";
 import SignUp from "./auth/SignUp";
-import { UserListProvider } from "./context/context";
+import { UserListProvider } from "./context/UserListContext";
+import { SocketProvider } from "./context/SocketContext";
 import axios from "axios";
 
 export default function App() {
@@ -51,7 +52,9 @@ export default function App() {
         ) : (
           <div className="flex flex-row h-full">
             <UserListProvider>
-              <Chat />
+              <SocketProvider>
+                <Chat />
+              </SocketProvider>
             </UserListProvider>
           </div>
         )}

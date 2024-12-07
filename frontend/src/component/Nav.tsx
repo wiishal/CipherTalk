@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useUserList } from "../context/context";
+import { useUserList } from "../context/UserListContext";
 import { getUsers } from "../sevices/userServices";
-
 
 const Nav: React.FC<NavProps> = ({ userName }) => {
   const { users } = useUserList();
@@ -50,7 +49,7 @@ const Nav: React.FC<NavProps> = ({ userName }) => {
           ))}
         </div>
       </div>
-          
+
       <div className="flex flex-col gap-2">
         <Link to={"/Search"}>Search</Link>
 

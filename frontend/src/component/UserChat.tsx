@@ -1,14 +1,18 @@
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Socket } from "socket.io-client";
-import SetKey from "./SetKey";
-import { SetkeyAtSession } from "./SetkeyAtSession";
+import { useSocket } from "../context/SocketContext";
+import SetKey from "./key/SetKey";
+import { SetkeyAtSession } from "./key/SetkeyAtSession";
 import { encryption, generateSalt } from "../encryption/encryptionUtil";
 import { getUserDetails } from "../sevices/userServices";
 import { checkKeyStatus } from "../sevices/encryptServices";
-import { ViewEncryptionMsg } from "./ViewEncryptedMsg";
+import { ViewEncryptionMsg } from "./msg/ViewEncryptedMsg";
+import { RenderMsg } from "./msg/RenderMsg";
+import { EncryptionTextInput } from "./inputs/EncryptionTextInput";
+import { NormalTextInput } from "./inputs/NormalTextInput";
 
-const UserChat: React.FC<UserChatProps> = ({ socket }) => {
+const UserChat: React.FC = () => {
+  const socket = useSocket();
   const { user } = useParams<keyof RouteParams>();
   const [username, setUsername] = useState<string>("");
 
@@ -19,13 +23,15 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
   const [encryptMsg, setEncryptMsg] = useState<string>("");
   //checking isencryption is set for sending encryption text
   const [isEncryptionKeySet, setEncryptionKeySet] = useState<boolean>(false);
-  const [isEncryptionKeySetDiv, setEncryptionKeySetDiv] =useState<boolean>(false);
+  const [isEncryptionKeySetDiv, setEncryptionKeySetDiv] =
+    useState<boolean>(false);
   const [StoreKeyAtSession, SetStoreKeyAtSession] = useState<boolean>(false);
 
   const [encryptMsgView, setEncryptMsgView] = useState<boolean>(false);
   const [msgView, SetMsgView] = useState<Msg>();
 
-  console.log(isEncryptionKeySet);
+  console.log(socket);
+
   useEffect(() => {
     const fetchAndSetup = async () => {
       const token = localStorage.getItem("userToken");
@@ -95,6 +101,12 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
     };
 
     fetchAndSetup();
+    return () => {
+      if (socket) {
+        socket.off("chat-history");
+        socket.off("receiveMessage");
+      }
+    };
   }, [user, socket]);
 
   const KeyStatus = async () => {
@@ -189,25 +201,24 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
     }
   };
 
-  function openEncryptedMsg(msg:Msg) {
-    if(msg){
+  function openEncryptedMsg(msg: Msg) {
+    if (msg) {
       setEncryptMsgView(true);
       SetMsgView(msg);
-
     }
     console.log(msg);
   }
 
   return (
-    <div className="size-full bg-neutral-900 text-white p-2">
+    <div className="size-full bg-neutral-900 text-white p-2 mr-5">
       {isEncryptionKeySetDiv && (
         <SetKey setEncryptionKeySet={setEncryptionKeySet} />
       )}
-      <div className="flex ">
+      <div className="flex justify-between m-3 ">
         <p className="text-3xl font-medium capitalize">{username}</p>
-        {/* {isEncryptionKeySet ? <p>key is set</p> : <p>key is not set</p>} */}
+
         <button
-          className=" rounded-xl bg-blue-800 text-cyan-50 font-medium  p-2"
+          className=" rounded-xl h-fit bg-blue-800 text-cyan-50 font-medium  p-2"
           onClick={enableEncryptionMode}
         >
           {" "}
@@ -223,80 +234,27 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
         />
       )}
 
-      <div className="flex-col h-5/6 p-3 bg-neutral-800 rounded-3xl overflow-auto">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={msg.from === "me" ? "text-blue-500 " : "text-green-500"}
-          >
-            {msg.encrypt ? (
-              <div
-                onClick={() => openEncryptedMsg(msg)}
-                className="flex align-middle pt-1 w-fit"
-              >
-                <p className="py-2 pr-1">
-                  {msg.from === "me" ? "You: " : `${msg.from}: `}
-                </p>
-                <div
-                  className="flex items-center rounded p-2 px-4 w-fit bg-neutral-700 text-neutral-300 text-xs text-center font-medium"
-                  onClick={() => console.log(msg.text)}
-                >
-                  <p>Encrypt</p>
-                </div>
-              </div>
-            ) : (
-              <p>
-                {msg.from === "me" ? "You: " : `${msg.from}: `} {msg.text}
-              </p>
-            )}
-          </div>
-        ))}
-      </div>
+      <RenderMsg messages={messages} openEncryptedMsg={openEncryptedMsg} />
+
       {StoreKeyAtSession && (
         <SetkeyAtSession SetStoreKeyAtSession={SetStoreKeyAtSession} />
       )}
       {encryptMode ? (
         // for encryption
-        <div className="flex  gap-1 m-2">
-          <input
-            className="text-white p-2 w-5/6 border rounded-3xl  border-green-400 bg-neutral-800"
-            type="text"
-            value={encryptMsg}
-            onChange={(e) => setEncryptMsg(e.target.value)}
-            placeholder="Type your message"
-          />
-          <button
-            className=" p-2  rounded-3xl bg-blue-600 text-white"
-            onClick={sendEncryptedMessage}
-          >
-            Send
-          </button>
-
-          <button
-            onClick={() => setEncryptionKeySetDiv((prev) => !prev)}
-            className="bg-red-800 text-white p-2 rounded-xl capitalize"
-          >
-            {isEncryptionKeySetDiv ? "Cancel" : "Set Key"}
-          </button>
-        </div>
+        <EncryptionTextInput
+          encryptMsg={encryptMsg}
+          setEncryptMsg={setEncryptMsg}
+          sendEncryptedMessage={sendEncryptedMessage}
+          setEncryptionKeySetDiv={setEncryptionKeySetDiv}
+          isEncryptionKeySetDiv={isEncryptionKeySetDiv}
+        />
       ) : (
         // normal text
-        <div className="flex  gap-1 m-2">
-          <input
-            className="text-white p-2 w-5/6 border rounded-3xl bg-gray-900 "
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type your message"
-          />
-
-          <button
-            className=" p-2  rounded-3xl bg-blue-600 text-white"
-            onClick={sendMessage}
-          >
-            Send
-          </button>
-        </div>
+        <NormalTextInput
+          message={message}
+          setMessage={setMessage}
+          sendMessage={sendMessage}
+        />
       )}
     </div>
   );
@@ -305,9 +263,7 @@ const UserChat: React.FC<UserChatProps> = ({ socket }) => {
 interface RouteParams {
   user: String | "";
 }
-interface UserChatProps {
-  socket: Socket | null;
-}
+
 interface Chat {
   id: Number;
   senderId: Number;
