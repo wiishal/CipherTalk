@@ -33,12 +33,14 @@ const setUpSocket = (server) => {
 
     try {
       const user = jwt.verify(token, process.env.jwtPassword);
+      
       console.log(`User ${user.id} connected with socket ID: ${socket.id}`);
 
       //regitering user
       socket.on("register", (username) => {
-        users[user.id] = { socketId: socket.id, username: user.username };
-        console.log(`${user.id} registered with ID: ${socket.id}`);
+          users[user.id] = { socketId: socket.id, username: user.username };
+          console.log(`${user.id} registered with ID: ${socket.id}`);
+        
       });
 
       //fetching chat history
@@ -70,19 +72,19 @@ const setUpSocket = (server) => {
           return;
         }
 
-        console.log(msg, users[msg.toUser].socketId, "currentuser", user);
+        console.log(msg, users[msg.toUser].username, "currentuser", user);
 
-        const recentChat = await insertChat(
-          user.id,
-          msg.toUser,
-          msg.message,
-          msg.encrypt,
-          msg.salt
-        );
+        // const recentChat = await insertChat(
+        //   user.id,
+        //   msg.toUser,
+        //   msg.message,
+        //   msg.encrypt,
+        //   msg.salt
+        // );
 
-        if(!recentChat){
-          console.log('Error while chat Saving')
-        }
+        // if(!recentChat){
+        //   console.log('Error while chat Saving')
+        // }
 
         io.to(users[msg.toUser].socketId).emit("receiveMessage", {
           text: msg.message,
