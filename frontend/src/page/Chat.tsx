@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import Nav from "../component/Nav";
-import { io,Socket } from "socket.io-client";
+
 import { Routes, Route } from "react-router-dom";
 import Setting from "../page/Setting";
 import axios from "axios";
 import UserChat from "../component/UserChat";
-import Home from "../component/Home";
+import Home from "./Home";
 import Search from "./Search";
 
 function Chat() {
   const [userName, setUserName] = useState<string | null>(null);
-  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("userToken");
@@ -28,19 +27,6 @@ function Chat() {
       });
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem("userToken");
-    if (token) {
-      const newSocket = io("http://localhost:3000", {
-        auth: { token: token },
-      });
-      setSocket(newSocket);
-      
-      return () => {
-        newSocket.disconnect();
-      };
-    }
-  }, []);
 
   return (
     < >
@@ -50,7 +36,7 @@ function Chat() {
         <Route path="/Search" element={<Search />}></Route>
         <Route
           path="/user/:user"
-          element={<UserChat socket={socket} />}
+          element={<UserChat />}
         ></Route>
         <Route path="/setting" element={<Setting />}></Route>
       </Routes>
