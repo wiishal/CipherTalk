@@ -28,7 +28,7 @@ export async function signup(
   password: string,
 ): Promise<string | null> {
   try {
-    const response = await axios.post(`${url}/auth/login`, {
+    const response = await axios.post(`${url}/auth/signUp`, {
       userName: username,
       userEmail:email,
       userPassword: password,
