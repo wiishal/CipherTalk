@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { useSocket } from "../context/SocketContext";
 import SetKey from "./key/SetKey";
 import { SetkeyAtSession } from "./key/SetkeyAtSession";
-import { encryption, generateSalt } from "../encryption/encryptionUtil";
 import { getUserDetails } from "../sevices/userServices";
 import { checkKeyStatus } from "../sevices/encryptServices";
 import { ViewEncryptionMsg } from "./msg/ViewEncryptedMsg";
@@ -15,22 +14,16 @@ const UserChat: React.FC = () => {
   const socket = useSocket();
   const { user } = useParams<keyof RouteParams>();
   const [username, setUsername] = useState<string>("");
-
-  const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<Msg[]>([]);
-
   const [encryptMode, setEncryptMode] = useState<boolean>(false);
-  const [encryptMsg, setEncryptMsg] = useState<string>("");
-  //checking isencryption is set for sending encryption text
   const [isEncryptionKeySet, setEncryptionKeySet] = useState<boolean>(false);
   const [isEncryptionKeySetDiv, setEncryptionKeySetDiv] =
     useState<boolean>(false);
   const [StoreKeyAtSession, SetStoreKeyAtSession] = useState<boolean>(false);
-
   const [encryptMsgView, setEncryptMsgView] = useState<boolean>(false);
   const [msgView, SetMsgView] = useState<Msg>();
 
-  console.log(socket);
+
 
   useEffect(() => {
     const fetchAndSetup = async () => {
@@ -124,80 +117,12 @@ const UserChat: React.FC = () => {
     }
   };
 
-  const sendMessage = () => {
-    if (message.trim() && socket) {
-      console.log(message);
-      socket.emit("chat-message", {
-        message: message,
-        toUser: user,
-        encrypt: false,
-        salt: null,
-      });
-
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          text: message,
-          from: "me",
-          encrypt: false,
-          salt: null,
-        },
-      ]);
-      setMessage("");
-    }
-  };
-
   const enableEncryptionMode = () => {
     if (encryptMode === true) {
       setEncryptMode(false);
     } else {
       setEncryptMode(true);
       KeyStatus();
-    }
-  };
-
-  const sendEncryptedMessage = async () => {
-    if (isEncryptionKeySet === false) {
-      alert("set encryption key");
-      return;
-    }
-    if (encryptMsg === "") {
-      alert("empty msg");
-      return;
-    }
-    if (sessionStorage.getItem("keyforthesession")) {
-      const msgsalt = generateSalt();
-      const key = sessionStorage.getItem("keyforthesession");
-      if (key) {
-        const encryptMsgstring = await encryption(key, msgsalt, encryptMsg);
-        console.log("encryption :", encryptMsg, msgsalt, encryptMsgstring);
-        if (!socket) {
-          alert("Connection error!");
-          return;
-        }
-        console.log(message);
-        socket.emit("chat-message", {
-          message: encryptMsgstring,
-          toUser: user,
-          encrypt: true,
-          salt: msgsalt,
-        });
-
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            text: encryptMsgstring,
-            from: "me",
-            encrypt: true,
-            salt: msgsalt,
-          },
-        ]);
-        setMessage("");
-      }
-    } else {
-      alert("key is not set");
-      SetStoreKeyAtSession(true);
-      return;
     }
   };
 
@@ -216,7 +141,6 @@ const UserChat: React.FC = () => {
       )}
       <div className="flex justify-between m-3 ">
         <p className="text-3xl font-medium capitalize">{username}</p>
-
         <button
           className=" rounded-xl h-fit bg-blue-800 text-cyan-50 font-medium  p-2"
           onClick={enableEncryptionMode}
@@ -242,19 +166,16 @@ const UserChat: React.FC = () => {
       {encryptMode ? (
         // for encryption
         <EncryptionTextInput
-          encryptMsg={encryptMsg}
-          setEncryptMsg={setEncryptMsg}
-          sendEncryptedMessage={sendEncryptedMessage}
+          user={user}
+          isEncryptionKeySet={isEncryptionKeySet}
           setEncryptionKeySetDiv={setEncryptionKeySetDiv}
           isEncryptionKeySetDiv={isEncryptionKeySetDiv}
+          setMessages={setMessages}
+          SetStoreKeyAtSession={SetStoreKeyAtSession}
         />
       ) : (
         // normal text
-        <NormalTextInput
-          message={message}
-          setMessage={setMessage}
-          sendMessage={sendMessage}
-        />
+        <NormalTextInput setMessages={setMessages} user={user} />
       )}
     </div>
   );

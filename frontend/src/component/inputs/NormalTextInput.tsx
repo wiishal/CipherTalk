@@ -1,10 +1,33 @@
-import { Dispatch,SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { useSocket } from "../../context/SocketContext";
 
-export const NormalTextInput: React.FC<props> = ({
-  message,
-  setMessage,
-  sendMessage,
-}) => {
+export const NormalTextInput: React.FC<props> = ({ setMessages,user }) => {
+  const socket = useSocket();
+  const [message, setMessage] = useState<string>("");
+
+  const sendMessage = () => {
+    if (message.trim() && socket) {
+      console.log(message);
+      socket.emit("chat-message", {
+        message: message,
+        toUser: user,
+        encrypt: false,
+        salt: null,
+      });
+
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          text: message,
+          from: "me",
+          encrypt: false,
+          salt: null,
+        },
+      ]);
+      setMessage("");
+    }
+  };
+
   return (
     <div className="flex w-full bg-neutral-800 rounded-b-md ">
       <input
@@ -26,7 +49,12 @@ export const NormalTextInput: React.FC<props> = ({
 };
 
 interface props {
-  message: string;
-  setMessage: Dispatch<SetStateAction<string>>;
-  sendMessage: () => void;
+  setMessages: Dispatch<SetStateAction<Msg[]>>;
+  user: string | undefined;
+}
+interface Msg {
+  text: string;
+  from: string;
+  encrypt: boolean;
+  salt: string | null;
 }
