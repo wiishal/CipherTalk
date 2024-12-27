@@ -7,7 +7,7 @@ export const EncryptionTextInput: React.FC<props> = ({
   isEncryptionKeySet,
   isEncryptionKeySetDiv,
   setEncryptionKeySetDiv,
-  setMessages,
+  setMessages, 
   SetStoreKeyAtSession,
 }) => {
   const socket = useSocket();
