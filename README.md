@@ -35,7 +35,7 @@ A real-time chat application that allows users to securely communicate with one 
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/chat-app.git
+   git clone https://github.com/wiishal/CipherTalk.git
    cd chat-app
    ```
 
