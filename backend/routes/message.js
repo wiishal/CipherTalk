@@ -33,7 +33,6 @@ const setUpSocket = (server) => {
 
     try {
       const user = jwt.verify(token, process.env.jwtPassword);
-      
       console.log(`User ${user.id} connected with socket ID: ${socket.id}`);
 
       //regitering user
@@ -65,13 +64,15 @@ const setUpSocket = (server) => {
         }
       });
 
+
+
+
       //sending event and saving chat
       socket.on("chat-message", async (msg) => {
         if (!users[msg.toUser]) {
           console.log("Returning from Chat-msg ");
           return;
         }
-
         console.log(msg, users[msg.toUser].username, "currentuser", user);
 
         // const recentChat = await insertChat(
