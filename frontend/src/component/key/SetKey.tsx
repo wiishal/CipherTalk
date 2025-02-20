@@ -62,16 +62,16 @@ const SetKey: React.FC<{
   }
 
   return (
-    <div className="absolute z-10 right-5 top-12 border border-slate-700 size-2/6 bg-neutral-900 p-4 rounded-xl">
+    <div className="absolute z-10 right-5 top-12 border border-slate-700 w-2/6 h-fit bg-neutral-900 p-4 rounded-xl font-medium ">
       <div className="flex p-2">
-        <h1 className="text-neutral-200">Generate Key</h1>
+        <h1 className="text-neutral-200 text-sm">Generate key</h1>
       </div>
       <div className="flex gap-3">
         <input
           value={key}
           type={isShowPass ? "text" : "password"}
           readOnly
-          className="rounded bg-neutral-700 text-wrap w-5/6 p-1 h-11"
+          className="rounded border bg-transparent border-transparent border-b-blue-700 text-wrap w-5/6 p-1 h-11 text-xs"
         />
         <button
           onClick={() => {
@@ -81,10 +81,10 @@ const SetKey: React.FC<{
           {isShowPass ? "Hide" : "Show"}
         </button>
       </div>
-      <div className="p-2 my-6">
+      <div className="flex p-2 my-6 gap-4 text-xs font-medium">
         {!keystatus ? (
           <button
-            className="p-2 rounded-sm bg-blue-900"
+            className="px-5 py-2 rounded-sm bg-blue-900"
             onClick={generateEncryptionkey}
           >
             Generate
@@ -94,9 +94,16 @@ const SetKey: React.FC<{
             already key is set Generate
           </button>
         )}
-        <button onClick={setKeyInsession}>Set Key </button>
+        <button
+          className="border border-blue-500 px-5 py-2 "
+          onClick={setKeyInsession}
+        >
+          Set Key{" "}
+        </button>
+
+        <button className="border border-blue-500 px-5 py-2 ">copy</button>
       </div>
-      <div>{keystatus ? <p>key is set</p> : <p>key is not set</p>}</div>
+      <div>{keystatus ? <p>key is set</p> : ""}</div>
     </div>
   );
 };

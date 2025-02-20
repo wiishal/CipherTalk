@@ -29,9 +29,9 @@ export const NormalTextInput: React.FC<props> = ({ setMessages,user }) => {
   };
 
   return (
-    <div className="flex w-full bg-neutral-800 rounded-b-md ">
+    <div className="flex w-full m-3 rounded-b-md items-start ">
       <input
-        className="text-white p-2 mx-2 w-11/12 mb-2 border rounded-3xl bg-transparent"
+        className="text-white px-4 py-2 mx-2 w-11/12 mb-2 border rounded-3xl bg-transparent"
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
@@ -39,7 +39,7 @@ export const NormalTextInput: React.FC<props> = ({ setMessages,user }) => {
       />
 
       <button
-        className=" p-2 rounded-3xl bg-blue-600 text-white"
+        className=" p-2  text-blue-400"
         onClick={sendMessage}
       >
         Send

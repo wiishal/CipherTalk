@@ -32,7 +32,7 @@ const Nav: React.FC<NavProps> = ({ userName }) => {
   return (
     <div className="flex flex-col gap-1 bg-neutral-900 text-white  rounded-xl h-full w-1/6 justify-between pb-5 p-2">
       <div>
-        <h4 className="text-3xl m-1 border border-black capitalize font-semibold  border-b-neutral-300 p-2 b ">
+        <h4 className="text-xl m-1 border border-black capitalize font-semibold  border-b-neutral-300 p-2 b ">
           {userName ? userName : "Guest"}
         </h4>{" "}
         <div className="py-1">

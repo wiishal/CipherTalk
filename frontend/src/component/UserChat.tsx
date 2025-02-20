@@ -139,10 +139,10 @@ const UserChat: React.FC = () => {
       {isEncryptionKeySetDiv && (
         <SetKey setEncryptionKeySet={setEncryptionKeySet} />
       )}
-      <div className="flex justify-between m-3 ">
-        <p className="text-3xl font-medium capitalize">{username}</p>
+      <div className="flex justify-between m-3  ">
+        <p className="text-xl font-medium capitalize">{username}</p>
         <button
-          className=" rounded-xl h-fit bg-blue-800 text-cyan-50 font-medium  p-2"
+          className="px-5 py-2 rounded bg-blue-800 text-cyan-50 font-medium text-sm"
           onClick={enableEncryptionMode}
         >
           {" "}

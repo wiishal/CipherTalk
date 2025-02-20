@@ -59,27 +59,29 @@ export const EncryptionTextInput: React.FC<props> = ({
   };
 
   return (
-    <div className="flex w-full bg-neutral-800 rounded-b-md">
+    <div className="flex w-full m-3 rounded-b-md gap-3">
       <input
-        className="text-white p-2 m-1 w-5/6 border rounded-3xl  border-green-400 bg-neutral-800"
+        className="text-white px-4 py-2 m-1 w-5/6 border rounded-3xl  border-green-400 bg-neutral-800"
         type="text"
         value={encryptMsg}
         onChange={(e) => setEncryptMsg(e.target.value)}
         placeholder="Type your message"
       />
-      <button
-        className=" p-2  rounded-3xl bg-blue-600 text-white"
-        onClick={sendEncryptedMessage}
-      >
-        Send
-      </button>
+      <div className="flex items-center gap-2 text-xs font-medium">
+        <button
+          className=" px-4 py-2 rounded-md bg-blue-600 text-white h-fit"
+          onClick={sendEncryptedMessage}
+        >
+          Send
+        </button>
 
-      <button
-        onClick={() => setEncryptionKeySetDiv((prev) => !prev)}
-        className="bg-red-800 text-white p-2 rounded-xl capitalize"
-      >
-        {isEncryptionKeySetDiv ? "Cancel" : "Set Key"}
-      </button>
+        <button
+          onClick={() => setEncryptionKeySetDiv((prev) => !prev)}
+          className="bg-red-800 text-white p-2 rounded-md capitalize"
+        >
+          {isEncryptionKeySetDiv ? "Cancel" : "Set Key"}
+        </button>
+      </div>
     </div>
   );
 };

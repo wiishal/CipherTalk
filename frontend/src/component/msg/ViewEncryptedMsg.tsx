@@ -56,56 +56,62 @@ export const ViewEncryptionMsg: React.FC<{
   }
 
   return (
-    <div className="absolute right-1 border h-5/6 w-1/3 p-4 rounded-3xl bg-neutral-900">
-      <button
-        className="mb-2 bg-blue-900 p-2 rounded-md font-medium"
-        onClick={() => {
-          setEncryptMsgView(false);
-        }}
-      >
-        {" "}
-        Close{" "}
-      </button>
-      <h2 className="text-lg font-bold">Message Details</h2>
-      <p>
-        <strong>From:</strong> {encryptedMsg.from}
-      </p>
-      <p>
-        <strong>Text:</strong> {encryptedMsg.text}
-      </p>
-      {encryptedMsg.encrypt && (
+    <div className="absolute right-1 border h-2/3 w-1/3 p-4 rounded-3xl bg-neutral-900 text-sm font-medium text-neutral-200">
+      <div className="flex justify-between items-center border border-transparent border-b-neutral-200">
+        <h2 className="text-sm font-medium">Message Details</h2>
+        <button
+          className="mb-2 px-4 py-2 bg-blue-900  rounded-md font-medium "
+          onClick={() => {
+            setEncryptMsgView(false);
+          }}
+        >
+          {" "}
+          Close{" "}
+        </button>
+      </div>
+      <div className="flex flex-col m-3">
         <p>
-          <strong>Encryption Salt:</strong>{" "}
-          {encryptedMsg.salt || "Not available"}
+          <strong>From:</strong> {encryptedMsg.from}
         </p>
-      )}
-      {encryptedMsg.from != "me" && (
-        <div className="">
-          <p className="text-lg font-bold">key</p>{" "}
-          <input
-            value={keyValue}
-            className="rounded p-2 bg-neutral-600 text-white w-4/5"
-            placeholder="enter Senders key here!"
-            onChange={(e) => {
-              setKeValue(e.target.value);
-            }}
-          ></input>
+        <p>
+          <strong>Text:</strong> {encryptedMsg.text}
+        </p>
+        {encryptedMsg.encrypt && (
+          <p>
+            <strong>Encryption Salt:</strong>{" "}
+            {encryptedMsg.salt || "Not available"}
+          </p>
+        )}
+        {encryptedMsg.from != "me" && (
+          <div className="flex flex-col gap-2 my-3 border border-transparent border-t-neutral-400">
+            <p className="text-sm">key</p>{" "}
+            <div className="flex flex-row gap-3">
+              <input
+                value={keyValue}
+                className="rounded p-2 bg-neutral-600 text-white w-4/5"
+                placeholder="enter Senders key here!"
+                onChange={(e) => {
+                  setKeValue(e.target.value);
+                }}
+              ></input>
+              <button
+                className="border border-neutral-300 px-4 py-1 my-1 rounded-1xl  text-white"
+                onClick={setSenderKey}
+              >
+                Set
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="mt-4">
           <button
-            className=" p-2 my-1 rounded-1xl bg-blue-600 text-white"
-            onClick={setSenderKey}
+            onClick={decryptmsg}
+            className=" px-4 py-1 bg-blue-800 text-white"
           >
-            Set Key
+            Decrypt{" "}
           </button>
         </div>
-      )}
-
-      <div className="mt-4">
-        <button
-          onClick={decryptmsg}
-          className=" p-2  rounded-1xl bg-blue-600 text-white"
-        >
-          Decrypt{" "}
-        </button>
       </div>
     </div>
   );

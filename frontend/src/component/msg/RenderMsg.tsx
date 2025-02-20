@@ -1,6 +1,6 @@
 export  const RenderMsg: React.FC<props> = ({ messages, openEncryptedMsg }) => {
   return (
-    <div className="flex-col h-5/6 p-3 bg-neutral-800 rounded-t-md overflow-auto">
+    <div className="flex-col h-4/5 p-3 bg-neutral-800 rounded-t-md overflow-auto">
       {messages.map((msg, index) => (
         <div
           key={index}

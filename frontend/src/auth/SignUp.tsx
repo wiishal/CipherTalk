@@ -2,7 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { signup } from "../sevices/authentication";
-
+import { useNavigate } from "react-router-dom";
 interface FormValues {
   name: string;
   email: string;
@@ -11,6 +11,7 @@ interface FormValues {
 
 
 const SignUp: React.FC = () => {
+  const navigate = useNavigate()
   const [isSignUpComplete, setIsSignUpComplete] = useState<boolean>(false);
   const { register, handleSubmit } = useForm<FormValues>();
   const [passwordVisibility, setPasswordVisibility] = useState<boolean>(true);
@@ -23,6 +24,7 @@ const SignUp: React.FC = () => {
     }
     localStorage.setItem("userToken", token);
     setIsSignUpComplete(true);
+    navigate("/");
   };
 
   return (
