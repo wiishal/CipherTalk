@@ -1,5 +1,6 @@
 # Chat Application
 
+
 A real-time chat application that allows users to securely communicate with one another using end-to-end encryption.
 
 ## Features
@@ -10,6 +11,21 @@ A real-time chat application that allows users to securely communicate with one 
 - **Message Storage:** Messages are stored securely in a database with associated metadata.
 - **Salt Management:** Each message includes a unique salt for encryption to enhance security.
 
+
+## Screeshots 
+- Key Generation
+  
+![Chat App Preview](frontend/public/cp.jfif)
+  
+- Key Setting
+  
+![Chat App Preview](frontend/public/cp1.jfif)
+
+- Message Preview 
+  
+![Chat App Preview](frontend/public/cp3.jpg)
+  
+  
 ## Technologies Used
 
 ### Frontend:
