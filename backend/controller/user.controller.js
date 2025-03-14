@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { createUser, getUser } = require("../services/userService");
+const creadentialCheck = require("../middleware/creadentialCheck") 
 
 exports.login = async (req, res) => {
   console.log("req at login");
@@ -37,6 +38,7 @@ exports.login = async (req, res) => {
 exports.signUp = async(req,res)=>{
     try {
         const { userName, userEmail, userPassword } = req.body;
+        console.log(userName)
         const isvalid = await creadentialCheck(userName, userEmail);
 
         if (isvalid) {

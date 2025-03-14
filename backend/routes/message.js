@@ -75,17 +75,17 @@ const setUpSocket = (server) => {
         }
         console.log(msg, users[msg.toUser].username, "currentuser", user);
 
-        // const recentChat = await insertChat(
-        //   user.id,
-        //   msg.toUser,
-        //   msg.message,
-        //   msg.encrypt,
-        //   msg.salt
-        // );
+        const recentChat = await insertChat(
+          user.id,
+          msg.toUser,
+          msg.message,
+          msg.encrypt,
+          msg.salt
+        );
 
-        // if(!recentChat){
-        //   console.log('Error while chat Saving')
-        // }
+        if(!recentChat){
+          console.log('Error while chat Saving')
+        }
 
         io.to(users[msg.toUser].socketId).emit("receiveMessage", {
           text: msg.message,
