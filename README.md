@@ -3,6 +3,18 @@
 
 A real-time chat application that allows users to securely communicate with one another using end-to-end encryption.
 
+## 🔑 How CipherTalk Works:
+
+- ✅ Key Generation – Users generate their own AES-256 encryption key.
+- ✅ No Key Storage – We do not store the encryption keys, ensuring complete privacy.
+- ✅ Encryption with Salt – Every message is encrypted using AES-GCM along with a unique salt for added security.
+- ✅ Decryption by User – Only users with the correct key can decrypt and read messages.
+
+## ⚠️ Limitations & User Experience Challenges:
+- ❌ Key Management – Since we don't store keys, users must securely remember or store them.
+- ❌ Decryption Experience – Users must manually enter the key each time, which may feel inconvenient.
+- ❌ Length of Key – The AES-256 key is long, which might make handling it difficult for non-technical users.
+
 ## Features
 
 - **Real-Time Communication:** Powered by Socket.IO for seamless real-time chat.
